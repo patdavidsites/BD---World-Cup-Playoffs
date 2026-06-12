@@ -221,7 +221,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <header>
   <div class="header-left">
     <h1>⚽ World Cup 2026 — Sweepstakes</h1>
-    <p>USA · Canada · Mexico &nbsp;|&nbsp; June 11 – July 19, 2026 &nbsp;|&nbsp; 48 teams, 104 games</p>
+    <p>USA · Canada · Mexico &nbsp;|&nbsp; 12 Jun – 20 Jul 2026 AEST &nbsp;|&nbsp; 48 teams, 104 games</p>
   </div>
   <div class="header-right">
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
@@ -231,7 +231,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <div class="results-strip" id="resultsStrip" style="display:none"></div>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — June 12</div>
+  <div class="today-label">⚡ Today — Fri 12 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -358,19 +358,67 @@ let state = {
     {name:'Pat',      color:'#7c3aed', initials:'PA'},
     {name:'Max',      color:'#0891b2', initials:'MX'},
     {name:'Anders',   color:'#ca8a04', initials:'AN'},
-    {name:'Andrew',   color:'#be185d', initials:'AD', short:'And'},
+    {name:'Andrew',   color:'#be185d', initials:'AD'},
   ],
 
-  // 48 teams, 6 each — randomised draw
+  // 48 teams, 6 each — randomised draw, each player guaranteed a top-8 favourite
   teamOwners: {
-    'Austria':'Caillin','Spain':'Caillin','Türkiye':'Caillin','Panama':'Caillin','Croatia':'Caillin','Mexico':'Caillin',
-    'Jordan':'Michael','Netherlands':'Michael','Colombia':'Michael','South Korea':'Michael','Canada':'Michael','Tunisia':'Michael',
-    'Iraq':'Chanelle','Switzerland':'Chanelle','Australia':'Chanelle','Scotland':'Chanelle','Morocco':'Chanelle','Cape Verde':'Chanelle',
-    'Saudi Arabia':'Taylor','Belgium':'Taylor','Sweden':'Taylor','DR Congo':'Taylor','Iran':'Taylor','Czechia':'Taylor',
-    'France':'Pat','Senegal':'Pat','New Zealand':'Pat','Japan':'Pat','Norway':'Pat','Uruguay':'Pat',
-    'Brazil':'Max','South Africa':'Max','USA':'Max','England':'Max','Portugal':'Max','Germany':'Max',
-    'Algeria':'Anders','Ecuador':'Anders','Haiti':'Anders','Argentina':'Anders','Ivory Coast':'Anders','Bosnia-Herz':'Anders',
-    'Qatar':'And','Paraguay':'And','Uzbekistan':'And','Ghana':'And','Curaçao':'And','Egypt':'And',
+    // 🏆 Top 8 favourites shown with ★
+    'Netherlands':'Caillin',  // ★
+    'Iraq':'Caillin',
+    'South Africa':'Caillin',
+    'Senegal':'Caillin',
+    'Haiti':'Caillin',
+    'Curaçao':'Caillin',
+
+    'England':'Michael',  // ★
+    'Ecuador':'Michael',
+    'South Korea':'Michael',
+    'Norway':'Michael',
+    'Uzbekistan':'Michael',
+    'Panama':'Michael',
+
+    'Spain':'Chanelle',  // ★
+    'Tunisia':'Chanelle',
+    'Mexico':'Chanelle',
+    'Iran':'Chanelle',
+    'Cape Verde':'Chanelle',
+    'Switzerland':'Chanelle',
+
+    'Argentina':'Taylor',  // ★
+    'Croatia':'Taylor',
+    'Czechia':'Taylor',
+    'Scotland':'Taylor',
+    'DR Congo':'Taylor',
+    'Türkiye':'Taylor',
+
+    'Portugal':'Pat',  // ★
+    'Canada':'Pat',
+    'Saudi Arabia':'Pat',
+    'Belgium':'Pat',
+    'Austria':'Pat',
+    'USA':'Pat',
+
+    'France':'Max',  // ★
+    'Uruguay':'Max',
+    'Qatar':'Max',
+    'Japan':'Max',
+    'Sweden':'Max',
+    'Egypt':'Max',
+
+    'Brazil':'Anders',  // ★
+    'Paraguay':'Anders',
+    'Australia':'Anders',
+    'Algeria':'Anders',
+    'Ghana':'Anders',
+    'Colombia':'Anders',
+
+    'Germany':'Andrew',  // ★
+    'Jordan':'Andrew',
+    'New Zealand':'Andrew',
+    'Ivory Coast':'Andrew',
+    'Bosnia-Herz':'Andrew',
+    'Morocco':'Andrew',
   },
 
   groupStandings: {},
@@ -666,78 +714,78 @@ function showTab(name, btn) {
 const ALL_TEAMS = Object.keys(FLAG_CODES);
 
 const SCHEDULE = [
-  {date:'Jun 11',time:'3pm ET',t1:'Mexico',t2:'South Africa'},
-  {date:'Jun 12',time:'3pm ET',t1:'Canada',t2:'Bosnia-Herz'},
-  {date:'Jun 12',time:'9pm ET',t1:'USA',t2:'Paraguay'},
-  {date:'Jun 12',time:'10pm ET',t1:'South Korea',t2:'Czechia'},
-  {date:'Jun 13',time:'3pm ET',t1:'Qatar',t2:'Switzerland'},
-  {date:'Jun 13',time:'6pm ET',t1:'Brazil',t2:'Morocco'},
-  {date:'Jun 13',time:'9pm ET',t1:'Haiti',t2:'Scotland'},
-  {date:'Jun 14',time:'12am ET',t1:'Australia',t2:'Türkiye'},
-  {date:'Jun 14',time:'1pm ET',t1:'Germany',t2:'Curaçao'},
-  {date:'Jun 14',time:'4pm ET',t1:'Netherlands',t2:'Japan'},
-  {date:'Jun 14',time:'7pm ET',t1:'Ivory Coast',t2:'Ecuador'},
-  {date:'Jun 14',time:'10pm ET',t1:'Sweden',t2:'Tunisia'},
-  {date:'Jun 15',time:'1pm ET',t1:'Spain',t2:'Cape Verde'},
-  {date:'Jun 15',time:'3pm ET',t1:'Belgium',t2:'Egypt'},
-  {date:'Jun 15',time:'6pm ET',t1:'Saudi Arabia',t2:'Uruguay'},
-  {date:'Jun 15',time:'9pm ET',t1:'Iran',t2:'New Zealand'},
-  {date:'Jun 16',time:'3pm ET',t1:'France',t2:'Senegal'},
-  {date:'Jun 16',time:'6pm ET',t1:'Iraq',t2:'Norway'},
-  {date:'Jun 16',time:'9pm ET',t1:'Argentina',t2:'Algeria'},
-  {date:'Jun 17',time:'12am ET',t1:'Austria',t2:'Jordan'},
-  {date:'Jun 17',time:'1pm ET',t1:'Portugal',t2:'DR Congo'},
-  {date:'Jun 17',time:'4pm ET',t1:'England',t2:'Croatia'},
-  {date:'Jun 17',time:'7pm ET',t1:'Ghana',t2:'Panama'},
-  {date:'Jun 17',time:'10pm ET',t1:'Uzbekistan',t2:'Colombia'},
-  {date:'Jun 18',time:'12pm ET',t1:'Czechia',t2:'South Africa'},
-  {date:'Jun 18',time:'3pm ET',t1:'Switzerland',t2:'Bosnia-Herz'},
-  {date:'Jun 18',time:'6pm ET',t1:'Canada',t2:'Qatar'},
-  {date:'Jun 18',time:'9pm ET',t1:'Mexico',t2:'South Korea'},
-  {date:'Jun 19',time:'3pm ET',t1:'USA',t2:'Australia'},
-  {date:'Jun 19',time:'6pm ET',t1:'Scotland',t2:'Morocco'},
-  {date:'Jun 19',time:'9pm ET',t1:'Brazil',t2:'Haiti'},
-  {date:'Jun 20',time:'12am ET',t1:'Türkiye',t2:'Paraguay'},
-  {date:'Jun 20',time:'1pm ET',t1:'Netherlands',t2:'Sweden'},
-  {date:'Jun 20',time:'4pm ET',t1:'Germany',t2:'Ivory Coast'},
-  {date:'Jun 20',time:'8pm ET',t1:'Ecuador',t2:'Curaçao'},
-  {date:'Jun 21',time:'12am ET',t1:'Tunisia',t2:'Japan'},
-  {date:'Jun 21',time:'12pm ET',t1:'Spain',t2:'Saudi Arabia'},
-  {date:'Jun 21',time:'3pm ET',t1:'Belgium',t2:'Iran'},
-  {date:'Jun 21',time:'6pm ET',t1:'Uruguay',t2:'Cape Verde'},
-  {date:'Jun 21',time:'9pm ET',t1:'New Zealand',t2:'Egypt'},
-  {date:'Jun 22',time:'1pm ET',t1:'Argentina',t2:'Austria'},
-  {date:'Jun 22',time:'5pm ET',t1:'France',t2:'Iraq'},
-  {date:'Jun 22',time:'8pm ET',t1:'Norway',t2:'Senegal'},
-  {date:'Jun 22',time:'11pm ET',t1:'Jordan',t2:'Algeria'},
-  {date:'Jun 23',time:'1pm ET',t1:'Portugal',t2:'Uzbekistan'},
-  {date:'Jun 23',time:'4pm ET',t1:'England',t2:'Ghana'},
-  {date:'Jun 23',time:'7pm ET',t1:'Panama',t2:'Croatia'},
-  {date:'Jun 23',time:'10pm ET',t1:'Colombia',t2:'DR Congo'},
-  {date:'Jun 24',time:'3pm ET',t1:'Switzerland',t2:'Canada'},
-  {date:'Jun 24',time:'3pm ET',t1:'Bosnia-Herz',t2:'Qatar'},
-  {date:'Jun 24',time:'6pm ET',t1:'Scotland',t2:'Brazil'},
-  {date:'Jun 24',time:'6pm ET',t1:'Morocco',t2:'Haiti'},
-  {date:'Jun 24',time:'9pm ET',t1:'Czechia',t2:'Mexico'},
-  {date:'Jun 24',time:'9pm ET',t1:'South Africa',t2:'South Korea'},
-  {date:'Jun 25',time:'4pm ET',t1:'Ecuador',t2:'Germany'},
-  {date:'Jun 25',time:'4pm ET',t1:'Curaçao',t2:'Ivory Coast'},
-  {date:'Jun 25',time:'7pm ET',t1:'Japan',t2:'Sweden'},
-  {date:'Jun 25',time:'7pm ET',t1:'Tunisia',t2:'Netherlands'},
-  {date:'Jun 25',time:'10pm ET',t1:'Türkiye',t2:'USA'},
-  {date:'Jun 25',time:'10pm ET',t1:'Paraguay',t2:'Australia'},
-  {date:'Jun 26',time:'3pm ET',t1:'Norway',t2:'France'},
-  {date:'Jun 26',time:'3pm ET',t1:'Senegal',t2:'Iraq'},
-  {date:'Jun 26',time:'8pm ET',t1:'Cape Verde',t2:'Saudi Arabia'},
-  {date:'Jun 26',time:'8pm ET',t1:'Uruguay',t2:'Spain'},
-  {date:'Jun 26',time:'11pm ET',t1:'Egypt',t2:'Iran'},
-  {date:'Jun 26',time:'11pm ET',t1:'New Zealand',t2:'Belgium'},
-  {date:'Jun 27',time:'3pm ET',t1:'Austria',t2:'Algeria'},
-  {date:'Jun 27',time:'3pm ET',t1:'Jordan',t2:'Argentina'},
-  {date:'Jun 27',time:'7pm ET',t1:'DR Congo',t2:'Uzbekistan'},
-  {date:'Jun 27',time:'7pm ET',t1:'Colombia',t2:'Portugal'},
-  {date:'Jun 27',time:'9pm ET',t1:'England',t2:'Panama'},
-  {date:'Jun 27',time:'9pm ET',t1:'Croatia',t2:'Ghana'},
+  {date:'Fri 12 Jun',time:'5:00am AEST',t1:'Mexico',t2:'South Africa'},
+  {date:'Fri 12 Jun',time:'12:00pm AEST',t1:'South Korea',t2:'Czechia'},
+  {date:'Sat 13 Jun',time:'5:00am AEST',t1:'Canada',t2:'Bosnia-Herz'},
+  {date:'Sat 13 Jun',time:'11:00am AEST',t1:'USA',t2:'Paraguay'},
+  {date:'Sun 14 Jun',time:'5:00am AEST',t1:'Qatar',t2:'Switzerland'},
+  {date:'Sun 14 Jun',time:'8:00am AEST',t1:'Brazil',t2:'Morocco'},
+  {date:'Sun 14 Jun',time:'11:00am AEST',t1:'Haiti',t2:'Scotland'},
+  {date:'Sun 14 Jun',time:'2:00pm AEST',t1:'Australia',t2:'Türkiye'},
+  {date:'Mon 15 Jun',time:'3:00am AEST',t1:'Germany',t2:'Curaçao'},
+  {date:'Mon 15 Jun',time:'6:00am AEST',t1:'Netherlands',t2:'Japan'},
+  {date:'Mon 15 Jun',time:'9:00am AEST',t1:'Ivory Coast',t2:'Ecuador'},
+  {date:'Mon 15 Jun',time:'12:00pm AEST',t1:'Sweden',t2:'Tunisia'},
+  {date:'Tue 16 Jun',time:'2:00am AEST',t1:'Spain',t2:'Cape Verde'},
+  {date:'Tue 16 Jun',time:'5:00am AEST',t1:'Belgium',t2:'Egypt'},
+  {date:'Tue 16 Jun',time:'8:00am AEST',t1:'Saudi Arabia',t2:'Uruguay'},
+  {date:'Tue 16 Jun',time:'11:00am AEST',t1:'Iran',t2:'New Zealand'},
+  {date:'Wed 17 Jun',time:'5:00am AEST',t1:'France',t2:'Senegal'},
+  {date:'Wed 17 Jun',time:'8:00am AEST',t1:'Iraq',t2:'Norway'},
+  {date:'Wed 17 Jun',time:'11:00am AEST',t1:'Argentina',t2:'Algeria'},
+  {date:'Wed 17 Jun',time:'2:00pm AEST',t1:'Austria',t2:'Jordan'},
+  {date:'Thu 18 Jun',time:'3:00am AEST',t1:'Portugal',t2:'DR Congo'},
+  {date:'Thu 18 Jun',time:'6:00am AEST',t1:'England',t2:'Croatia'},
+  {date:'Thu 18 Jun',time:'6:00am AEST',t1:'Ghana',t2:'Panama'},
+  {date:'Thu 18 Jun',time:'12:00pm AEST',t1:'Uzbekistan',t2:'Colombia'},
+  {date:'Fri 19 Jun',time:'2:00am AEST',t1:'Czechia',t2:'South Africa'},
+  {date:'Fri 19 Jun',time:'5:00am AEST',t1:'Switzerland',t2:'Bosnia-Herz'},
+  {date:'Fri 19 Jun',time:'8:00am AEST',t1:'Canada',t2:'Qatar'},
+  {date:'Fri 19 Jun',time:'1:00pm AEST',t1:'Mexico',t2:'South Korea'},
+  {date:'Sat 20 Jun',time:'5:00am AEST',t1:'USA',t2:'Australia'},
+  {date:'Sat 20 Jun',time:'8:00am AEST',t1:'Scotland',t2:'Morocco'},
+  {date:'Sat 20 Jun',time:'11:00am AEST',t1:'Brazil',t2:'Haiti'},
+  {date:'Sat 20 Jun',time:'1:00pm AEST',t1:'Türkiye',t2:'Paraguay'},
+  {date:'Sun 21 Jun',time:'3:00am AEST',t1:'Netherlands',t2:'Sweden'},
+  {date:'Sun 21 Jun',time:'6:00am AEST',t1:'Germany',t2:'Ivory Coast'},
+  {date:'Sun 21 Jun',time:'10:00am AEST',t1:'Ecuador',t2:'Curaçao'},
+  {date:'Sun 21 Jun',time:'2:00pm AEST',t1:'Tunisia',t2:'Japan'},
+  {date:'Mon 22 Jun',time:'2:00am AEST',t1:'Spain',t2:'Saudi Arabia'},
+  {date:'Mon 22 Jun',time:'5:00am AEST',t1:'Belgium',t2:'Iran'},
+  {date:'Mon 22 Jun',time:'8:00am AEST',t1:'Uruguay',t2:'Cape Verde'},
+  {date:'Mon 22 Jun',time:'11:00am AEST',t1:'New Zealand',t2:'Egypt'},
+  {date:'Tue 23 Jun',time:'3:00am AEST',t1:'Argentina',t2:'Austria'},
+  {date:'Tue 23 Jun',time:'7:00am AEST',t1:'France',t2:'Iraq'},
+  {date:'Tue 23 Jun',time:'10:00am AEST',t1:'Norway',t2:'Senegal'},
+  {date:'Tue 23 Jun',time:'1:00pm AEST',t1:'Jordan',t2:'Algeria'},
+  {date:'Wed 24 Jun',time:'3:00am AEST',t1:'Portugal',t2:'Uzbekistan'},
+  {date:'Wed 24 Jun',time:'6:00am AEST',t1:'England',t2:'Ghana'},
+  {date:'Wed 24 Jun',time:'9:00am AEST',t1:'Panama',t2:'Croatia'},
+  {date:'Wed 24 Jun',time:'12:00pm AEST',t1:'Colombia',t2:'DR Congo'},
+  {date:'Thu 25 Jun',time:'5:00am AEST',t1:'Switzerland',t2:'Canada'},
+  {date:'Thu 25 Jun',time:'5:00am AEST',t1:'Bosnia-Herz',t2:'Qatar'},
+  {date:'Thu 25 Jun',time:'8:00am AEST',t1:'Scotland',t2:'Brazil'},
+  {date:'Thu 25 Jun',time:'8:00am AEST',t1:'Morocco',t2:'Haiti'},
+  {date:'Thu 25 Jun',time:'1:00pm AEST',t1:'Czechia',t2:'Mexico'},
+  {date:'Thu 25 Jun',time:'1:00pm AEST',t1:'South Africa',t2:'South Korea'},
+  {date:'Fri 26 Jun',time:'6:00am AEST',t1:'Curaçao',t2:'Ivory Coast'},
+  {date:'Fri 26 Jun',time:'6:00am AEST',t1:'Ecuador',t2:'Germany'},
+  {date:'Fri 26 Jun',time:'9:00am AEST',t1:'Japan',t2:'Sweden'},
+  {date:'Fri 26 Jun',time:'9:00am AEST',t1:'Tunisia',t2:'Netherlands'},
+  {date:'Fri 26 Jun',time:'12:00pm AEST',t1:'Türkiye',t2:'USA'},
+  {date:'Fri 26 Jun',time:'12:00pm AEST',t1:'Paraguay',t2:'Australia'},
+  {date:'Sat 27 Jun',time:'5:00am AEST',t1:'Norway',t2:'France'},
+  {date:'Sat 27 Jun',time:'5:00am AEST',t1:'Senegal',t2:'Iraq'},
+  {date:'Sat 27 Jun',time:'8:00am AEST',t1:'Cape Verde',t2:'Saudi Arabia'},
+  {date:'Sat 27 Jun',time:'10:00am AEST',t1:'Uruguay',t2:'Spain'},
+  {date:'Sat 27 Jun',time:'1:00pm AEST',t1:'Egypt',t2:'Iran'},
+  {date:'Sat 27 Jun',time:'1:00pm AEST',t1:'New Zealand',t2:'Belgium'},
+  {date:'Sun 28 Jun',time:'7:00am AEST',t1:'Panama',t2:'England'},
+  {date:'Sun 28 Jun',time:'7:00am AEST',t1:'Croatia',t2:'Ghana'},
+  {date:'Sun 28 Jun',time:'9:30am AEST',t1:'Colombia',t2:'Portugal'},
+  {date:'Sun 28 Jun',time:'9:30am AEST',t1:'DR Congo',t2:'Uzbekistan'},
+  {date:'Sun 28 Jun',time:'12:00pm AEST',t1:'Algeria',t2:'Austria'},
+  {date:'Sun 28 Jun',time:'12:00pm AEST',t1:'Jordan',t2:'Argentina'},
 ];
 
 function findTeamFuzzy(name, pool) {
@@ -949,14 +997,17 @@ function renderMyTeams() {
 // ══════════════════════════════════════════
 
 function renderSchedule() {
-  const today = 'Jun 12'; // current date key
+  const today = 'Fri 12 Jun'; // AEST date
   const grid = document.getElementById('scheduleGrid');
 
   // Date parse helper for sorting
   const months = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
   function parseDateKey(d) {
-    const [m, day] = d.split(' ');
-    return months[m] * 100 + parseInt(day);
+    // handles "Fri 12 Jun" format
+    const parts = d.split(' ');
+    const day = parseInt(parts[1]);
+    const mon = parts[2];
+    return months[mon] * 100 + day;
   }
   const todayNum = parseDateKey(today);
 
