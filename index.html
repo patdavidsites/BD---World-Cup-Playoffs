@@ -157,6 +157,26 @@ button.apply-btn:hover { opacity: 0.88; }
 .update-status.err { background: #fef2f2; color: #b91c1c; display: block; border: 1px solid rgba(185,28,28,0.2); }
 [data-theme="dark"] .update-status.err { background: rgba(231,76,60,0.12); color: #f87171; }
 
+/* MY TEAMS */
+.myteams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; padding: 1.5rem 2rem; }
+.myteams-card { background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 2px solid; }
+.myteams-card-header { padding: 0.9rem 1rem 0.75rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+.myteams-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+.myteams-name { font-family: 'Oswald', sans-serif; font-size: 1.05rem; font-weight: 600; letter-spacing: 0.03em; }
+.myteams-count { font-size: 0.72rem; margin-left: auto; opacity: 0.7; }
+.myteams-team-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; transition: background 0.1s; }
+.myteams-team-row:last-child { border-bottom: none; }
+.myteams-team-row.eliminated { opacity: 0.35; }
+.myteams-team-flag { font-size: 1rem; flex-shrink: 0; }
+.myteams-team-name { flex: 1; font-weight: 500; color: var(--text); }
+.myteams-team-status { font-size: 0.65rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.myteams-team-pts { font-size: 0.75rem; font-weight: 700; min-width: 28px; text-align: right; color: var(--text2); }
+.status-live { background: rgba(212,160,23,0.18); color: var(--gold); border: 1px solid rgba(212,160,23,0.4); }
+.status-adv { background: var(--green-bg); color: var(--green); border: 1px solid rgba(26,122,60,0.25); }
+.status-out { background: rgba(180,0,0,0.08); color: #b00; border: 1px solid rgba(180,0,0,0.2); }
+[data-theme="dark"] .status-out { color: #f87171; background: rgba(231,76,60,0.12); border-color: rgba(231,76,60,0.25); }
+.myteams-score-badge { font-size: 0.68rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: var(--surface2); color: var(--text2); white-space: nowrap; }
+
 /* RESULTS STRIP */
 .results-strip { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.5rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .result-label { font-family: 'Oswald', sans-serif; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
@@ -189,6 +209,7 @@ button.apply-btn:hover { opacity: 0.88; }
 </div>
 
 <div class="tab-bar">
+  <button class="tab-btn" onclick="showTab('myteams',this)">My Teams</button>
   <button class="tab-btn active" onclick="showTab('groups',this)">Group Stage</button>
   <button class="tab-btn" onclick="showTab('knockout',this)">Knockout</button>
 </div>
@@ -200,6 +221,9 @@ button.apply-btn:hover { opacity: 0.88; }
   <div class="knockout-wrapper">
     <div class="knockout-scroll" id="knockoutScroll"></div>
   </div>
+</div>
+<div class="tab-panel" id="tab-myteams">
+  <div class="myteams-grid" id="myTeamsGrid"></div>
 </div>
 
 <div class="update-section">
@@ -275,52 +299,32 @@ const KNOCKOUT_ROUNDS = [
 ];
 
 // ══════════════════════════════════════════
-// STAFF — 7 players, 48 teams
-// 6 players get 7 teams, Anders gets 6
-// Distributed to mix strong & weak nations
+// STAFF — 8 players, 48 teams, 6 each
+// Randomised draw
 // ══════════════════════════════════════════
 
 let state = {
   staff: [
-    {name:'Caillin',  color:'#dc2626', initials:'CA'},  // vivid red
-    {name:'Michael',  color:'#2563eb', initials:'MI'},  // strong blue
-    {name:'Chanelle', color:'#16a34a', initials:'CH'},  // forest green
-    {name:'Taylor',   color:'#ea580c', initials:'TA'},  // burnt orange
-    {name:'Pat',      color:'#7c3aed', initials:'PA'},  // deep purple
-    {name:'Max',      color:'#0891b2', initials:'MX'},  // teal/cyan
-    {name:'Anders',   color:'#ca8a04', initials:'AN'},  // golden yellow
+    {name:'Caillin',  color:'#dc2626', initials:'CA'},
+    {name:'Michael',  color:'#2563eb', initials:'MI'},
+    {name:'Chanelle', color:'#16a34a', initials:'CH'},
+    {name:'Taylor',   color:'#ea580c', initials:'TA'},
+    {name:'Pat',      color:'#7c3aed', initials:'PA'},
+    {name:'Max',      color:'#0891b2', initials:'MX'},
+    {name:'Anders',   color:'#ca8a04', initials:'AN'},
+    {name:'And',      color:'#be185d', initials:'AD'},
   ],
 
-  // 48 teams distributed evenly — mix of strong/weak per player
-  // Caillin:7  Michael:7  Chanelle:7  Taylor:7  Pat:7  Max:7  Anders:6
+  // 48 teams, 6 each — randomised draw
   teamOwners: {
-    // Caillin (7) — France, Mexico, Belgium, Ecuador, Ghana, New Zealand, Jordan
-    'France':'Caillin','Mexico':'Caillin','Belgium':'Caillin',
-    'Ecuador':'Caillin','Ghana':'Caillin','New Zealand':'Caillin','Jordan':'Caillin',
-
-    // Michael (7) — Brazil, Germany, Switzerland, Senegal, Panama, Iraq, Curaçao
-    'Brazil':'Michael','Germany':'Michael','Switzerland':'Michael',
-    'Senegal':'Michael','Panama':'Michael','Iraq':'Michael','Curaçao':'Michael',
-
-    // Chanelle (7) — England, Netherlands, Uruguay, Colombia, Australia, Haiti, Cape Verde
-    'England':'Chanelle','Netherlands':'Chanelle','Uruguay':'Chanelle',
-    'Colombia':'Chanelle','Australia':'Chanelle','Haiti':'Chanelle','Cape Verde':'Chanelle',
-
-    // Taylor (7) — Argentina, Spain, Japan, Morocco, Scotland, Bosnia-Herz, Uzbekistan
-    'Argentina':'Taylor','Spain':'Taylor','Japan':'Taylor',
-    'Morocco':'Taylor','Scotland':'Taylor','Bosnia-Herz':'Taylor','Uzbekistan':'Taylor',
-
-    // Pat (7) — Portugal, Croatia, Egypt, Canada, Iran, South Korea, Algeria
-    'Portugal':'Pat','Croatia':'Pat','Egypt':'Pat',
-    'Canada':'Pat','Iran':'Pat','South Korea':'Pat','Algeria':'Pat',
-
-    // Max (7) — USA, Sweden, Saudi Arabia, DR Congo, Norway, Paraguay, Tunisia
-    'USA':'Max','Sweden':'Max','Saudi Arabia':'Max',
-    'DR Congo':'Max','Norway':'Max','Paraguay':'Max','Tunisia':'Max',
-
-    // Anders (6) — Austria, Ivory Coast, Qatar, Turkey, Czechia, South Africa
-    'Austria':'Anders','Ivory Coast':'Anders','Qatar':'Anders',
-    'Türkiye':'Anders','Czechia':'Anders','South Africa':'Anders',
+    'Austria':'Caillin','Spain':'Caillin','Türkiye':'Caillin','Panama':'Caillin','Croatia':'Caillin','Mexico':'Caillin',
+    'Jordan':'Michael','Netherlands':'Michael','Colombia':'Michael','South Korea':'Michael','Canada':'Michael','Tunisia':'Michael',
+    'Iraq':'Chanelle','Switzerland':'Chanelle','Australia':'Chanelle','Scotland':'Chanelle','Morocco':'Chanelle','Cape Verde':'Chanelle',
+    'Saudi Arabia':'Taylor','Belgium':'Taylor','Sweden':'Taylor','DR Congo':'Taylor','Iran':'Taylor','Czechia':'Taylor',
+    'France':'Pat','Senegal':'Pat','New Zealand':'Pat','Japan':'Pat','Norway':'Pat','Uruguay':'Pat',
+    'Brazil':'Max','South Africa':'Max','USA':'Max','England':'Max','Portugal':'Max','Germany':'Max',
+    'Algeria':'Anders','Ecuador':'Anders','Haiti':'Anders','Argentina':'Anders','Ivory Coast':'Anders','Bosnia-Herz':'Anders',
+    'Qatar':'And','Paraguay':'And','Uzbekistan':'And','Ghana':'And','Curaçao':'And','Egypt':'And',
   },
 
   groupStandings: {},
@@ -732,12 +736,83 @@ function showStatus(msg, ok) {
 // MAIN
 // ══════════════════════════════════════════
 
+// ══════════════════════════════════════════
+// RENDER: MY TEAMS
+// ══════════════════════════════════════════
+
+function renderMyTeams() {
+  const todaySet = new Set(TODAY_MATCHES.flatMap(m => m.teams));
+  const allAdvanced = Object.values(state.groupAdvanced).flat();
+
+  const grid = document.getElementById('myTeamsGrid');
+  grid.innerHTML = state.staff.map(s => {
+    const myTeams = Object.entries(state.teamOwners)
+      .filter(([t, o]) => o === s.name)
+      .map(([t]) => t);
+
+    const rgb = hexToRgb(s.color);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const headerAlpha = isDark ? 0.18 : 0.10;
+    const borderAlpha = isDark ? 0.50 : 0.35;
+
+    // Work out points for each team from group standings
+    const teamRows = myTeams.map(team => {
+      const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(team));
+      const standing = state.groupStandings[gLetter]?.find(r => r.team === team);
+      const pts = standing ? standing.p : 0;
+      const gf = standing ? standing.gf : 0;
+      const ga = standing ? standing.ga : 0;
+      const played = standing ? (standing.w + standing.d + standing.l) : 0;
+
+      const isToday = todaySet.has(team);
+      const isAdv = allAdvanced.includes(team);
+      // Check if knocked out: group stage done but not advanced
+      // We consider eliminated if groupAdvanced for their group is set and they're not in it
+      const groupAdv = state.groupAdvanced[gLetter];
+      const isEliminated = groupAdv && groupAdv.length > 0 && !groupAdv.includes(team);
+
+      let statusHTML = '';
+      if (isToday) statusHTML = '<span class="myteams-team-status status-live">▶ Playing</span>';
+      else if (isAdv) statusHTML = '<span class="myteams-team-status status-adv">✓ Advanced</span>';
+      else if (isEliminated) statusHTML = '<span class="myteams-team-status status-out">✗ Out</span>';
+
+      const ptsLabel = played > 0 ? `<span class="myteams-score-badge">${pts}pts</span>` : '';
+      const rowCls = isEliminated ? 'myteams-team-row eliminated' : 'myteams-team-row';
+      const rowBg = !isEliminated ? `background:rgba(${rgb},${isDark?0.10:0.06})` : '';
+
+      return `<div class="${rowCls}" style="${rowBg}">
+        <span class="myteams-team-flag">${flag(team)}</span>
+        <span class="myteams-team-name">${team}</span>
+        ${statusHTML}
+        ${ptsLabel}
+      </div>`;
+    }).join('');
+
+    // Count alive teams
+    const aliveCount = myTeams.filter(t => {
+      const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(t));
+      const groupAdv = state.groupAdvanced[gLetter];
+      return !groupAdv || groupAdv.length === 0 || groupAdv.includes(t);
+    }).length;
+
+    return `<div class="myteams-card" style="border-color:rgba(${rgb},${borderAlpha})">
+      <div class="myteams-card-header" style="background:rgba(${rgb},${headerAlpha})">
+        <div class="myteams-avatar" style="background:rgba(${rgb},0.20);color:${s.color};border:2px solid rgba(${rgb},0.40)">${s.initials}</div>
+        <span class="myteams-name" style="color:${s.color}">${s.name}</span>
+        <span class="myteams-count" style="color:${s.color}">${aliveCount} / ${myTeams.length} alive</span>
+      </div>
+      ${teamRows}
+    </div>`;
+  }).join('');
+}
+
 function render() {
   renderLegend();
   renderResultsStrip();
   renderToday();
   renderGroups();
   renderKnockout();
+  renderMyTeams();
 }
 
 initStandings();
