@@ -164,6 +164,23 @@ button.apply-btn:hover { opacity: 0.88; }
 .myteams-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
 .myteams-name { font-family: 'Oswald', sans-serif; font-size: 1.05rem; font-weight: 600; letter-spacing: 0.03em; }
 .myteams-count { font-size: 0.72rem; margin-left: auto; opacity: 0.7; }
+.myteams-total-pts { font-family:'Oswald',sans-serif; font-size:1.1rem; font-weight:700; padding:3px 10px; border-radius:6px; border:2px solid; white-space:nowrap; }
+.myteams-pts-label { font-size:0.58rem; text-transform:uppercase; letter-spacing:0.08em; opacity:0.7; display:block; text-align:center; margin-top:1px; }
+
+/* LEADERBOARD */
+.leaderboard { margin:1.25rem 2rem 0; background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+.leaderboard-header { background:var(--surface2); padding:0.6rem 1rem; font-family:'Oswald',sans-serif; font-size:0.72rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.5rem; }
+.leaderboard-row { display:flex; align-items:center; gap:0.75rem; padding:0.55rem 1rem; border-bottom:1px solid var(--border); }
+.leaderboard-row:last-child { border-bottom:none; }
+.leaderboard-row.leader { background:rgba(212,160,23,0.07); }
+.lb-rank { font-family:'Oswald',sans-serif; font-size:1rem; font-weight:700; width:22px; text-align:center; color:var(--muted); flex-shrink:0; }
+.lb-rank.gold { color:#d4a017; }
+.lb-rank.silver { color:#aaa; }
+.lb-rank.bronze { color:#cd7f32; }
+.lb-bar-wrap { flex:1; background:var(--surface2); border-radius:4px; height:6px; overflow:hidden; }
+.lb-bar { height:100%; border-radius:4px; transition:width 0.4s ease; }
+.lb-pts-big { font-family:'Oswald',sans-serif; font-size:1rem; font-weight:700; min-width:52px; text-align:right; }
+.lb-breakdown { font-size:0.65rem; color:var(--muted); white-space:nowrap; }
 .myteams-team-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; transition: background 0.1s; }
 .myteams-team-row:last-child { border-bottom: none; }
 .myteams-team-row.eliminated { opacity: 0.35; }
@@ -256,6 +273,7 @@ button.apply-btn:hover { opacity: 0.88; }
   </div>
 </div>
 <div class="tab-panel" id="tab-myteams">
+  <div class="leaderboard" id="leaderboard"></div>
   <div class="myteams-grid" id="myTeamsGrid"></div>
 </div>
 <div class="tab-panel" id="tab-schedule">
@@ -714,78 +732,101 @@ function showTab(name, btn) {
 const ALL_TEAMS = Object.keys(FLAG_CODES);
 
 const SCHEDULE = [
-  {date:'Fri 12 Jun',time:'5:00am AEST',t1:'Mexico',t2:'South Africa'},
-  {date:'Fri 12 Jun',time:'12:00pm AEST',t1:'South Korea',t2:'Czechia'},
-  {date:'Sat 13 Jun',time:'5:00am AEST',t1:'Canada',t2:'Bosnia-Herz'},
-  {date:'Sat 13 Jun',time:'11:00am AEST',t1:'USA',t2:'Paraguay'},
-  {date:'Sun 14 Jun',time:'5:00am AEST',t1:'Qatar',t2:'Switzerland'},
-  {date:'Sun 14 Jun',time:'8:00am AEST',t1:'Brazil',t2:'Morocco'},
-  {date:'Sun 14 Jun',time:'11:00am AEST',t1:'Haiti',t2:'Scotland'},
-  {date:'Sun 14 Jun',time:'2:00pm AEST',t1:'Australia',t2:'Türkiye'},
-  {date:'Mon 15 Jun',time:'3:00am AEST',t1:'Germany',t2:'Curaçao'},
-  {date:'Mon 15 Jun',time:'6:00am AEST',t1:'Netherlands',t2:'Japan'},
-  {date:'Mon 15 Jun',time:'9:00am AEST',t1:'Ivory Coast',t2:'Ecuador'},
-  {date:'Mon 15 Jun',time:'12:00pm AEST',t1:'Sweden',t2:'Tunisia'},
-  {date:'Tue 16 Jun',time:'2:00am AEST',t1:'Spain',t2:'Cape Verde'},
-  {date:'Tue 16 Jun',time:'5:00am AEST',t1:'Belgium',t2:'Egypt'},
-  {date:'Tue 16 Jun',time:'8:00am AEST',t1:'Saudi Arabia',t2:'Uruguay'},
-  {date:'Tue 16 Jun',time:'11:00am AEST',t1:'Iran',t2:'New Zealand'},
-  {date:'Wed 17 Jun',time:'5:00am AEST',t1:'France',t2:'Senegal'},
-  {date:'Wed 17 Jun',time:'8:00am AEST',t1:'Iraq',t2:'Norway'},
-  {date:'Wed 17 Jun',time:'11:00am AEST',t1:'Argentina',t2:'Algeria'},
-  {date:'Wed 17 Jun',time:'2:00pm AEST',t1:'Austria',t2:'Jordan'},
-  {date:'Thu 18 Jun',time:'3:00am AEST',t1:'Portugal',t2:'DR Congo'},
-  {date:'Thu 18 Jun',time:'6:00am AEST',t1:'England',t2:'Croatia'},
-  {date:'Thu 18 Jun',time:'6:00am AEST',t1:'Ghana',t2:'Panama'},
-  {date:'Thu 18 Jun',time:'12:00pm AEST',t1:'Uzbekistan',t2:'Colombia'},
-  {date:'Fri 19 Jun',time:'2:00am AEST',t1:'Czechia',t2:'South Africa'},
-  {date:'Fri 19 Jun',time:'5:00am AEST',t1:'Switzerland',t2:'Bosnia-Herz'},
-  {date:'Fri 19 Jun',time:'8:00am AEST',t1:'Canada',t2:'Qatar'},
-  {date:'Fri 19 Jun',time:'1:00pm AEST',t1:'Mexico',t2:'South Korea'},
-  {date:'Sat 20 Jun',time:'5:00am AEST',t1:'USA',t2:'Australia'},
-  {date:'Sat 20 Jun',time:'8:00am AEST',t1:'Scotland',t2:'Morocco'},
-  {date:'Sat 20 Jun',time:'11:00am AEST',t1:'Brazil',t2:'Haiti'},
-  {date:'Sat 20 Jun',time:'1:00pm AEST',t1:'Türkiye',t2:'Paraguay'},
-  {date:'Sun 21 Jun',time:'3:00am AEST',t1:'Netherlands',t2:'Sweden'},
-  {date:'Sun 21 Jun',time:'6:00am AEST',t1:'Germany',t2:'Ivory Coast'},
-  {date:'Sun 21 Jun',time:'10:00am AEST',t1:'Ecuador',t2:'Curaçao'},
-  {date:'Sun 21 Jun',time:'2:00pm AEST',t1:'Tunisia',t2:'Japan'},
-  {date:'Mon 22 Jun',time:'2:00am AEST',t1:'Spain',t2:'Saudi Arabia'},
-  {date:'Mon 22 Jun',time:'5:00am AEST',t1:'Belgium',t2:'Iran'},
-  {date:'Mon 22 Jun',time:'8:00am AEST',t1:'Uruguay',t2:'Cape Verde'},
-  {date:'Mon 22 Jun',time:'11:00am AEST',t1:'New Zealand',t2:'Egypt'},
-  {date:'Tue 23 Jun',time:'3:00am AEST',t1:'Argentina',t2:'Austria'},
-  {date:'Tue 23 Jun',time:'7:00am AEST',t1:'France',t2:'Iraq'},
-  {date:'Tue 23 Jun',time:'10:00am AEST',t1:'Norway',t2:'Senegal'},
-  {date:'Tue 23 Jun',time:'1:00pm AEST',t1:'Jordan',t2:'Algeria'},
-  {date:'Wed 24 Jun',time:'3:00am AEST',t1:'Portugal',t2:'Uzbekistan'},
-  {date:'Wed 24 Jun',time:'6:00am AEST',t1:'England',t2:'Ghana'},
-  {date:'Wed 24 Jun',time:'9:00am AEST',t1:'Panama',t2:'Croatia'},
-  {date:'Wed 24 Jun',time:'12:00pm AEST',t1:'Colombia',t2:'DR Congo'},
-  {date:'Thu 25 Jun',time:'5:00am AEST',t1:'Switzerland',t2:'Canada'},
-  {date:'Thu 25 Jun',time:'5:00am AEST',t1:'Bosnia-Herz',t2:'Qatar'},
-  {date:'Thu 25 Jun',time:'8:00am AEST',t1:'Scotland',t2:'Brazil'},
-  {date:'Thu 25 Jun',time:'8:00am AEST',t1:'Morocco',t2:'Haiti'},
-  {date:'Thu 25 Jun',time:'1:00pm AEST',t1:'Czechia',t2:'Mexico'},
-  {date:'Thu 25 Jun',time:'1:00pm AEST',t1:'South Africa',t2:'South Korea'},
-  {date:'Fri 26 Jun',time:'6:00am AEST',t1:'Curaçao',t2:'Ivory Coast'},
-  {date:'Fri 26 Jun',time:'6:00am AEST',t1:'Ecuador',t2:'Germany'},
-  {date:'Fri 26 Jun',time:'9:00am AEST',t1:'Japan',t2:'Sweden'},
-  {date:'Fri 26 Jun',time:'9:00am AEST',t1:'Tunisia',t2:'Netherlands'},
-  {date:'Fri 26 Jun',time:'12:00pm AEST',t1:'Türkiye',t2:'USA'},
-  {date:'Fri 26 Jun',time:'12:00pm AEST',t1:'Paraguay',t2:'Australia'},
-  {date:'Sat 27 Jun',time:'5:00am AEST',t1:'Norway',t2:'France'},
-  {date:'Sat 27 Jun',time:'5:00am AEST',t1:'Senegal',t2:'Iraq'},
-  {date:'Sat 27 Jun',time:'8:00am AEST',t1:'Cape Verde',t2:'Saudi Arabia'},
-  {date:'Sat 27 Jun',time:'10:00am AEST',t1:'Uruguay',t2:'Spain'},
-  {date:'Sat 27 Jun',time:'1:00pm AEST',t1:'Egypt',t2:'Iran'},
-  {date:'Sat 27 Jun',time:'1:00pm AEST',t1:'New Zealand',t2:'Belgium'},
-  {date:'Sun 28 Jun',time:'7:00am AEST',t1:'Panama',t2:'England'},
-  {date:'Sun 28 Jun',time:'7:00am AEST',t1:'Croatia',t2:'Ghana'},
-  {date:'Sun 28 Jun',time:'9:30am AEST',t1:'Colombia',t2:'Portugal'},
-  {date:'Sun 28 Jun',time:'9:30am AEST',t1:'DR Congo',t2:'Uzbekistan'},
-  {date:'Sun 28 Jun',time:'12:00pm AEST',t1:'Algeria',t2:'Austria'},
-  {date:'Sun 28 Jun',time:'12:00pm AEST',t1:'Jordan',t2:'Argentina'},
+  // ── GROUP A ──
+  {date:'Fri 12 Jun', time:'5:00am',  t1:'Mexico',       t2:'South Africa'},
+  {date:'Fri 12 Jun', time:'12:00pm', t1:'South Korea',  t2:'Czechia'},
+  {date:'Fri 19 Jun', time:'2:00am',  t1:'Czechia',      t2:'South Africa'},
+  {date:'Fri 19 Jun', time:'11:00am', t1:'Mexico',       t2:'South Korea'},
+  {date:'Fri 25 Jun', time:'11:00am', t1:'Czechia',      t2:'Mexico'},
+  {date:'Fri 25 Jun', time:'11:00am', t1:'South Africa', t2:'South Korea'},
+
+  // ── GROUP B ──
+  {date:'Sat 13 Jun', time:'5:00am',  t1:'Canada',       t2:'Bosnia-Herz'},
+  {date:'Sun 14 Jun', time:'5:00am',  t1:'Qatar',        t2:'Switzerland'},
+  {date:'Fri 19 Jun', time:'2:00am',  t1:'Switzerland',  t2:'Bosnia-Herz'},
+  {date:'Fri 19 Jun', time:'8:00am',  t1:'Canada',       t2:'Qatar'},
+  {date:'Thu 25 Jun', time:'5:00am',  t1:'Switzerland',  t2:'Canada'},
+  {date:'Thu 25 Jun', time:'5:00am',  t1:'Bosnia-Herz',  t2:'Qatar'},
+
+  // ── GROUP C ──
+  {date:'Sun 14 Jun', time:'8:00am',  t1:'Brazil',       t2:'Morocco'},
+  {date:'Sun 14 Jun', time:'11:00am', t1:'Haiti',        t2:'Scotland'},
+  {date:'Sat 20 Jun', time:'8:00am',  t1:'Scotland',     t2:'Morocco'},
+  {date:'Sat 20 Jun', time:'11:00am', t1:'Brazil',       t2:'Haiti'},
+  {date:'Thu 25 Jun', time:'8:00am',  t1:'Scotland',     t2:'Brazil'},
+  {date:'Thu 25 Jun', time:'8:00am',  t1:'Morocco',      t2:'Haiti'},
+
+  // ── GROUP D ──
+  {date:'Sat 13 Jun', time:'11:00am', t1:'USA',          t2:'Paraguay'},
+  {date:'Sun 14 Jun', time:'2:00pm',  t1:'Australia',    t2:'Türkiye'},
+  {date:'Sat 20 Jun', time:'5:00am',  t1:'USA',          t2:'Australia'},
+  {date:'Sat 20 Jun', time:'1:00pm',  t1:'Türkiye',      t2:'Paraguay'},
+  {date:'Fri 26 Jun', time:'12:00pm', t1:'Türkiye',      t2:'USA'},
+  {date:'Fri 26 Jun', time:'12:00pm', t1:'Paraguay',     t2:'Australia'},
+
+  // ── GROUP E ──
+  {date:'Mon 15 Jun', time:'3:00am',  t1:'Germany',      t2:'Curaçao'},
+  {date:'Mon 15 Jun', time:'9:00am',  t1:'Ivory Coast',  t2:'Ecuador'},
+  {date:'Sun 21 Jun', time:'6:00am',  t1:'Germany',      t2:'Ivory Coast'},
+  {date:'Sun 21 Jun', time:'10:00am', t1:'Ecuador',      t2:'Curaçao'},
+  {date:'Fri 26 Jun', time:'6:00am',  t1:'Ecuador',      t2:'Germany'},
+  {date:'Fri 26 Jun', time:'6:00am',  t1:'Curaçao',      t2:'Ivory Coast'},
+
+  // ── GROUP F ──
+  {date:'Mon 15 Jun', time:'6:00am',  t1:'Netherlands',  t2:'Japan'},
+  {date:'Mon 15 Jun', time:'12:00pm', t1:'Sweden',       t2:'Tunisia'},
+  {date:'Sun 21 Jun', time:'3:00am',  t1:'Netherlands',  t2:'Sweden'},
+  {date:'Sun 21 Jun', time:'2:00pm',  t1:'Tunisia',      t2:'Japan'},
+  {date:'Fri 26 Jun', time:'9:00am',  t1:'Japan',        t2:'Sweden'},
+  {date:'Fri 26 Jun', time:'9:00am',  t1:'Tunisia',      t2:'Netherlands'},
+
+  // ── GROUP G ──
+  {date:'Tue 16 Jun', time:'5:00am',  t1:'Belgium',      t2:'Egypt'},
+  {date:'Tue 16 Jun', time:'11:00am', t1:'Iran',         t2:'New Zealand'},
+  {date:'Mon 22 Jun', time:'5:00am',  t1:'Belgium',      t2:'Iran'},
+  {date:'Mon 22 Jun', time:'11:00am', t1:'New Zealand',  t2:'Egypt'},
+  {date:'Sat 27 Jun', time:'1:00pm',  t1:'Egypt',        t2:'Iran'},
+  {date:'Sat 27 Jun', time:'1:00pm',  t1:'New Zealand',  t2:'Belgium'},
+
+  // ── GROUP H ──
+  {date:'Tue 16 Jun', time:'2:00am',  t1:'Spain',        t2:'Cape Verde'},
+  {date:'Tue 16 Jun', time:'8:00am',  t1:'Saudi Arabia', t2:'Uruguay'},
+  {date:'Mon 22 Jun', time:'2:00am',  t1:'Spain',        t2:'Saudi Arabia'},
+  {date:'Mon 22 Jun', time:'8:00am',  t1:'Uruguay',      t2:'Cape Verde'},
+  {date:'Sat 27 Jun', time:'8:00am',  t1:'Cape Verde',   t2:'Saudi Arabia'},
+  {date:'Sat 27 Jun', time:'10:00am', t1:'Uruguay',      t2:'Spain'},
+
+  // ── GROUP I ──
+  {date:'Wed 17 Jun', time:'5:00am',  t1:'France',       t2:'Senegal'},
+  {date:'Wed 17 Jun', time:'8:00am',  t1:'Iraq',         t2:'Norway'},
+  {date:'Tue 23 Jun', time:'7:00am',  t1:'France',       t2:'Iraq'},
+  {date:'Tue 23 Jun', time:'10:00am', t1:'Norway',       t2:'Senegal'},
+  {date:'Sat 27 Jun', time:'5:00am',  t1:'Norway',       t2:'France'},
+  {date:'Sat 27 Jun', time:'5:00am',  t1:'Senegal',      t2:'Iraq'},
+
+  // ── GROUP J ──
+  {date:'Wed 17 Jun', time:'11:00am', t1:'Argentina',    t2:'Algeria'},
+  {date:'Wed 17 Jun', time:'2:00pm',  t1:'Austria',      t2:'Jordan'},
+  {date:'Tue 23 Jun', time:'3:00am',  t1:'Argentina',    t2:'Austria'},
+  {date:'Tue 23 Jun', time:'1:00pm',  t1:'Jordan',       t2:'Algeria'},
+  {date:'Sun 28 Jun', time:'12:00pm', t1:'Algeria',      t2:'Austria'},
+  {date:'Sun 28 Jun', time:'12:00pm', t1:'Jordan',       t2:'Argentina'},
+
+  // ── GROUP K ──
+  {date:'Thu 18 Jun', time:'3:00am',  t1:'Portugal',     t2:'DR Congo'},
+  {date:'Thu 18 Jun', time:'12:00pm', t1:'Uzbekistan',   t2:'Colombia'},
+  {date:'Wed 24 Jun', time:'3:00am',  t1:'Portugal',     t2:'Uzbekistan'},
+  {date:'Wed 24 Jun', time:'12:00pm', t1:'Colombia',     t2:'DR Congo'},
+  {date:'Sun 28 Jun', time:'9:30am',  t1:'Colombia',     t2:'Portugal'},
+  {date:'Sun 28 Jun', time:'9:30am',  t1:'DR Congo',     t2:'Uzbekistan'},
+
+  // ── GROUP L ──
+  {date:'Thu 18 Jun', time:'6:00am',  t1:'England',      t2:'Croatia'},
+  {date:'Thu 18 Jun', time:'6:00am',  t1:'Ghana',        t2:'Panama'},
+  {date:'Wed 24 Jun', time:'6:00am',  t1:'England',      t2:'Ghana'},
+  {date:'Wed 24 Jun', time:'9:00am',  t1:'Panama',       t2:'Croatia'},
+  {date:'Sun 28 Jun', time:'7:00am',  t1:'Panama',       t2:'England'},
+  {date:'Sun 28 Jun', time:'7:00am',  t1:'Croatia',      t2:'Ghana'},
 ];
 
 function findTeamFuzzy(name, pool) {
@@ -918,42 +959,128 @@ function showStatus(msg, ok) {
 function renderMyTeams() {
   const todaySet = new Set(TODAY_MATCHES.flatMap(m => m.teams));
   const allAdvanced = Object.values(state.groupAdvanced).flat();
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
+  // ── Points system ──
+  // Group stage: team pts carry through directly (3/1/0 per match)
+  // Knockout bonus: +5 R32, +8 R16, +12 QF, +18 SF, +25 Final win
+  // (encourages sweepstakes excitement as tournament progresses)
+  const KNOCKOUT_BONUS = { 'R32':5, 'R16':8, 'QF':12, 'SF':18, 'FINAL':25 };
+
+  function getPlayerPoints(playerName) {
+    const myTeams = Object.entries(state.teamOwners)
+      .filter(([t,o]) => o === playerName).map(([t]) => t);
+
+    let groupPts = 0;
+    let knockoutBonus = 0;
+    let knockoutDetail = [];
+
+    // Group stage points
+    myTeams.forEach(team => {
+      const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(team));
+      const standing = state.groupStandings[gLetter]?.find(r => r.team === team);
+      if (standing) groupPts += standing.p;
+    });
+
+    // Knockout bonus points — check each round
+    KNOCKOUT_ROUNDS.forEach(round => {
+      const prefix = round.label === 'Round of 32' ? 'R32'
+        : round.label === 'Round of 16' ? 'R16'
+        : round.label === 'Quarter-Finals' ? 'QF'
+        : round.label === 'Semi-Finals' ? 'SF'
+        : 'FINAL';
+      const bonus = KNOCKOUT_BONUS[prefix];
+      round.games.forEach(gid => {
+        const g = state.knockoutGames[gid];
+        if (!g || !g.winner) return;
+        if (myTeams.includes(g.winner)) {
+          knockoutBonus += bonus;
+          knockoutDetail.push(`+${bonus} ${prefix}`);
+        }
+      });
+    });
+
+    return { total: groupPts + knockoutBonus, groupPts, knockoutBonus, knockoutDetail };
+  }
+
+  // Build scores for all players
+  const playerScores = state.staff.map(s => ({
+    ...s,
+    ...getPlayerPoints(s.name),
+  })).sort((a, b) => b.total - a.total);
+
+  const maxPts = Math.max(...playerScores.map(p => p.total), 1);
+
+  // ── Leaderboard ──
+  const lb = document.getElementById('leaderboard');
+  const rankLabels = ['🥇','🥈','🥉'];
+  const rankClasses = ['gold','silver','bronze'];
+  lb.innerHTML = `<div class="leaderboard-header">🏆 Leaderboard — Points Race <span style="margin-left:auto;font-size:0.65rem;color:var(--muted)">Group pts + Knockout bonus</span></div>` +
+    playerScores.map((p, i) => {
+      const rgb = hexToRgb(p.color);
+      const barW = maxPts > 0 ? Math.round((p.total / maxPts) * 100) : 0;
+      const rankLabel = i < 3 ? rankLabels[i] : `${i+1}`;
+      const rankCls = i < 3 ? rankClasses[i] : '';
+      const detail = p.knockoutDetail.length ? ` · ${p.knockoutDetail.join(', ')}` : '';
+      const breakdown = p.total > 0
+        ? `<span class="lb-breakdown">${p.groupPts} group${detail}</span>`
+        : `<span class="lb-breakdown" style="color:var(--muted)">No points yet</span>`;
+      return `<div class="leaderboard-row${i===0&&p.total>0?' leader':''}">
+        <span class="lb-rank ${rankCls}">${rankLabel}</span>
+        <div class="avatar" style="width:26px;height:26px;font-size:0.6rem;background:rgba(${rgb},0.18);color:${p.color};border:1px solid rgba(${rgb},0.4)">${p.initials}</div>
+        <span style="font-weight:600;font-size:0.82rem;min-width:70px;color:${p.color}">${p.name}</span>
+        <div class="lb-bar-wrap">
+          <div class="lb-bar" style="width:${barW}%;background:${p.color}"></div>
+        </div>
+        ${breakdown}
+        <span class="lb-pts-big" style="color:${p.color}">${p.total}<span style="font-size:0.6rem;font-weight:400;color:var(--muted)">pts</span></span>
+      </div>`;
+    }).join('');
+
+  // ── Player cards ──
   const grid = document.getElementById('myTeamsGrid');
   grid.innerHTML = state.staff.map(s => {
     const myTeams = Object.entries(state.teamOwners)
-      .filter(([t, o]) => o === s.name)
-      .map(([t]) => t);
+      .filter(([t, o]) => o === s.name).map(([t]) => t);
 
     const rgb = hexToRgb(s.color);
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const headerAlpha = isDark ? 0.18 : 0.10;
     const borderAlpha = isDark ? 0.50 : 0.35;
+    const score = getPlayerPoints(s.name);
 
-    // Work out points for each team from group standings
     const teamRows = myTeams.map(team => {
       const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(team));
       const standing = state.groupStandings[gLetter]?.find(r => r.team === team);
       const pts = standing ? standing.p : 0;
-      const gf = standing ? standing.gf : 0;
-      const ga = standing ? standing.ga : 0;
       const played = standing ? (standing.w + standing.d + standing.l) : 0;
-
-      const isToday = todaySet.has(team);
-      const isAdv = allAdvanced.includes(team);
-      // Check if knocked out: group stage done but not advanced
-      // We consider eliminated if groupAdvanced for their group is set and they're not in it
-      const groupAdv = state.groupAdvanced[gLetter];
-      const isEliminated = groupAdv && groupAdv.length > 0 && !groupAdv.includes(team);
-
-      let statusHTML = '';
-      if (isToday) statusHTML = '<span class="myteams-team-status status-live">▶ Playing</span>';
-      else if (isAdv) statusHTML = '<span class="myteams-team-status status-adv">✓ Advanced</span>';
-      else if (isEliminated) statusHTML = '<span class="myteams-team-status status-out">✗ Out</span>';
-
       const w = standing ? standing.w : 0;
       const d = standing ? standing.d : 0;
       const l = standing ? standing.l : 0;
+
+      const isToday = todaySet.has(team);
+      const groupAdv = state.groupAdvanced[gLetter];
+      const isAdv = allAdvanced.includes(team);
+      const isEliminated = groupAdv && groupAdv.length > 0 && !groupAdv.includes(team);
+
+      // Check knockout wins for this team
+      let knockoutWins = [];
+      KNOCKOUT_ROUNDS.forEach(round => {
+        const prefix = round.label === 'Round of 32' ? 'R32'
+          : round.label === 'Round of 16' ? 'R16'
+          : round.label === 'Quarter-Finals' ? 'QF'
+          : round.label === 'Semi-Finals' ? 'SF' : 'FINAL';
+        round.games.forEach(gid => {
+          const g = state.knockoutGames[gid];
+          if (g?.winner === team) knockoutWins.push(`+${KNOCKOUT_BONUS[prefix]} ${prefix}`);
+        });
+      });
+
+      let statusHTML = '';
+      if (isToday) statusHTML = '<span class="myteams-team-status status-live">▶ Playing</span>';
+      else if (isAdv) statusHTML = '<span class="myteams-team-status status-adv">✓ Adv</span>';
+      else if (isEliminated) statusHTML = '<span class="myteams-team-status status-out">✗ Out</span>';
+      if (knockoutWins.length) statusHTML += `<span class="myteams-team-status status-adv" style="margin-left:2px">${knockoutWins.join(' ')}</span>`;
+
       const wdlHTML = played > 0
         ? `<div class="wdl">
             <span class="wdl-pill wdl-w">${w}W</span>
@@ -962,6 +1089,7 @@ function renderMyTeams() {
             <span class="wdl-pts">${pts}pts</span>
            </div>`
         : '';
+
       const rowCls = isEliminated ? 'myteams-team-row eliminated' : 'myteams-team-row';
       const rowBg = !isEliminated ? `background:rgba(${rgb},${isDark?0.10:0.06})` : '';
 
@@ -973,7 +1101,6 @@ function renderMyTeams() {
       </div>`;
     }).join('');
 
-    // Count alive teams
     const aliveCount = myTeams.filter(t => {
       const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(t));
       const groupAdv = state.groupAdvanced[gLetter];
@@ -984,7 +1111,11 @@ function renderMyTeams() {
       <div class="myteams-card-header" style="background:rgba(${rgb},${headerAlpha})">
         <div class="myteams-avatar" style="background:rgba(${rgb},0.20);color:${s.color};border:2px solid rgba(${rgb},0.40)">${s.initials}</div>
         <span class="myteams-name" style="color:${s.color}">${s.name}</span>
-        <span class="myteams-count" style="color:${s.color}">${aliveCount} / ${myTeams.length} alive</span>
+        <span class="myteams-count" style="color:${s.color}">${aliveCount}/${myTeams.length} alive</span>
+        <div class="myteams-total-pts" style="color:${s.color};border-color:rgba(${hexToRgb(s.color)},0.4);background:rgba(${hexToRgb(s.color)},0.12)">
+          ${score.total}
+          <span class="myteams-pts-label">pts</span>
+        </div>
       </div>
       ${teamRows}
     </div>`;
@@ -997,7 +1128,7 @@ function renderMyTeams() {
 // ══════════════════════════════════════════
 
 function renderSchedule() {
-  const today = 'Fri 12 Jun'; // AEST date
+  const today = 'Fri 12 Jun'; // AEST date — must match date format in SCHEDULE
   const grid = document.getElementById('scheduleGrid');
 
   // Date parse helper for sorting
