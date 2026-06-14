@@ -248,7 +248,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <div class="results-strip" id="resultsStrip" style="display:none"></div>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Fri 12 Jun (AEST)</div>
+  <div class="today-label">⚡ Today — Mon 15 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -344,14 +344,27 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Canada','Bosnia-Herz'], time:'3pm ET',  venue:'Toronto'},
-  {teams:['USA','Paraguay'],       time:'6pm PT',  venue:'Los Angeles'},
-  {teams:['South Korea','Czechia'],time:'10pm CT', venue:'Guadalajara'},
+  {teams:['Spain',        'Cape Verde'],  time:'1:00am AEST', venue:'Atlanta'},
+  {teams:['Belgium',      'Egypt'],       time:'5:00am AEST', venue:'Atlanta'},
+  {teams:['Saudi Arabia', 'Uruguay'],     time:'8:00am AEST', venue:'Dallas'},
+  {teams:['Iran',         'New Zealand'], time:'11:00am AEST',venue:'Kansas City'},
 ];
 
 // Known results already played
 const KNOWN_RESULTS = [
-  {group:'A', t1:'Mexico', s1:2, t2:'South Africa', s2:0},
+  // ── Jun 11 ──
+  {group:'A', t1:'Mexico',      s1:2, t2:'South Africa', s2:0},
+  {group:'A', t1:'South Korea', s1:2, t2:'Czechia',      s2:1},
+  // ── Jun 12 ──
+  {group:'B', t1:'Canada',      s1:1, t2:'Bosnia-Herz',  s2:1},
+  {group:'D', t1:'USA',         s1:4, t2:'Paraguay',     s2:1},
+  // ── Jun 13 ──
+  {group:'B', t1:'Qatar',       s1:1, t2:'Switzerland',  s2:1},
+  {group:'C', t1:'Brazil',      s1:1, t2:'Morocco',      s2:1},
+  {group:'C', t1:'Haiti',       s1:0, t2:'Scotland',     s2:1},
+  // ── Jun 14 ──
+  {group:'D', t1:'Australia',   s1:2, t2:'Türkiye',      s2:0},
+  {group:'E', t1:'Germany',     s1:7, t2:'Curaçao',      s2:1},
 ];
 
 const KNOCKOUT_ROUNDS = [
@@ -1128,7 +1141,7 @@ function renderMyTeams() {
 // ══════════════════════════════════════════
 
 function renderSchedule() {
-  const today = 'Fri 12 Jun'; // AEST date — must match date format in SCHEDULE
+  const today = 'Mon 15 Jun'; // AEST date — must match date format in SCHEDULE
   const grid = document.getElementById('scheduleGrid');
 
   // Date parse helper for sorting
