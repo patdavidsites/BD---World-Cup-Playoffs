@@ -1159,28 +1159,29 @@ function renderMyTeams() {
 // ══════════════════════════════════════════
 
 function renderSchedule() {
-  const today = 'Mon 15 Jun'; // AEST date — must match date format in SCHEDULE
   const grid = document.getElementById('scheduleGrid');
 
-  // Date parse helper for sorting
+  // Dynamic today in AEST
   const months = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
-  function parseDateKey(d) {
-    // handles "Fri 12 Jun" format
-    const parts = d.split(' ');
-    const day = parseInt(parts[1]);
-    const mon = parts[2];
-    return months[mon] * 100 + day;
-  }
-  const todayNum = parseDateKey(today);
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const nowAEST = new Date(new Date().toLocaleString('en-AU', {timeZone:'Australia/Sydney'}));
+  const todayStr = `${dayNames[nowAEST.getDay()]} ${nowAEST.getDate()} ${monthNames[nowAEST.getMonth()]}`;
 
-  // Convert time string to sortable number for ordering within a day
+  function parseDateKey(d) {
+    const parts = d.split(' ');
+    return months[parts[2]] * 100 + parseInt(parts[1]);
+  }
+  const todayNum = parseDateKey(todayStr);
+
   function parseTime(t) {
-    const m = t.match(/(\d+)(am|pm)/i);
+    const m = t.match(/(\d+)(?::(\d+))?(am|pm)/i);
     if (!m) return 0;
     let h = parseInt(m[1]);
-    if (m[2].toLowerCase()==='pm' && h!==12) h+=12;
-    if (m[2].toLowerCase()==='am' && h===12) h=0;
-    return h;
+    const min = parseInt(m[2]||'0');
+    if (m[3].toLowerCase()==='pm' && h!==12) h+=12;
+    if (m[3].toLowerCase()==='am' && h===12) h=0;
+    return h*60+min;
   }
 
   grid.innerHTML = state.staff.map(s => {
@@ -1189,83 +1190,74 @@ function renderSchedule() {
     const headerAlpha = isDark ? 0.18 : 0.10;
     const borderAlpha = isDark ? 0.50 : 0.35;
 
-    // Find all matches involving this player's teams
     const myTeams = new Set(Object.entries(state.teamOwners).filter(([t,o])=>o===s.name).map(([t])=>t));
     const myMatches = SCHEDULE.filter(m => myTeams.has(m.t1) || myTeams.has(m.t2));
 
-    // Sort by date then time
     myMatches.sort((a,b) => {
       const dd = parseDateKey(a.date) - parseDateKey(b.date);
       if (dd !== 0) return dd;
       return parseTime(a.time) - parseTime(b.time);
     });
 
-    // Get group standings for score lookup
-    const getScore = (t1, t2) => {
-      const gLetter = Object.keys(GROUPS).find(k => GROUPS[k].includes(t1));
-      if (!gLetter) return null;
-      const st = state.groupStandings[gLetter];
-      if (!st) return null;
-      // We store aggregate standings not per-match scores, so just show pts
-      return null;
-    };
-
     const matchRows = myMatches.map(m => {
+      // Played = score exists in matchScores OR date is in the past
+      const scoreData = state.matchScores[m.t1+'|'+m.t2];
       const dateNum = parseDateKey(m.date);
-      const isPlayed = dateNum < todayNum;
-      const isToday = m.date === today;
+      const isPlayed = !!scoreData || dateNum < todayNum;
+      const isToday = m.date === todayStr;
+      const isLive = isToday && !scoreData;
 
-      // Which of this player's teams is in this match?
       const myTeam = myTeams.has(m.t1) ? m.t1 : m.t2;
       const oppTeam = myTeam === m.t1 ? m.t2 : m.t1;
       const oppSf = staffFor(oppTeam);
       const oppRgb = oppSf ? hexToRgb(oppSf.color) : null;
-
       const oppTag = oppSf
-        ? `<span style="font-size:0.6rem;padding:1px 5px;border-radius:3px;background:rgba(${oppRgb},0.18);color:${oppSf.color};border:1px solid rgba(${oppRgb},0.35);font-weight:700;white-space:nowrap">${oppSf.name.length<=4?oppSf.name:oppSf.short||oppSf.name.slice(0,3)}</span>`
+        ? `<span style="font-size:0.6rem;padding:1px 5px;border-radius:3px;background:rgba(${oppRgb},0.18);color:${oppSf.color};border:1px solid rgba(${oppRgb},0.35);font-weight:700;white-space:nowrap">${oppSf.name.length<=5?oppSf.name:oppSf.name.slice(0,3)}</span>`
         : '';
 
-      const todayDot = isToday ? '<span class="sched-today-dot"></span>' : '';
-      const rowCls = isPlayed ? 'sched-match played' : isToday ? 'sched-match today' : 'sched-match';
-      const rowBg = !isPlayed ? `background:rgba(${rgb},${isDark?0.08:0.05})` : '';
-
-      // Look up actual score if available
-      const scoreData = state.matchScores[m.t1+'|'+m.t2];
-      const myScore = scoreData ? (myTeam===m.t1 ? scoreData.s1 : scoreData.s2) : null;
+      // Score badge
+      const myScore  = scoreData ? (myTeam===m.t1 ? scoreData.s1 : scoreData.s2) : null;
       const oppScore = scoreData ? (myTeam===m.t1 ? scoreData.s2 : scoreData.s1) : null;
-      const won = myScore !== null && myScore > oppScore;
+      const won  = myScore !== null && myScore > oppScore;
       const drew = myScore !== null && myScore === oppScore;
-      const scoreColor = won ? 'var(--green)' : drew ? 'var(--gold)' : '#b00';
-      const [datTheme] = [document.documentElement.getAttribute('data-theme')];
-      const scoreColorDark = won ? '#1db954' : drew ? '#d4a017' : '#f87171';
-      const finalScoreColor = isDark ? scoreColorDark : scoreColor;
+      const scoreColor = isDark
+        ? (won ? '#1db954' : drew ? '#d4a017' : '#f87171')
+        : (won ? 'var(--green)' : drew ? 'var(--gold)' : '#b00');
 
-      const resultBadge = isPlayed
-        ? (scoreData
-            ? `<span class="sched-result" style="color:${finalScoreColor};border:1px solid ${finalScoreColor}33">${myScore}–${oppScore}</span>`
-            : '<span class="sched-result">Done</span>')
-        : '';
+      let resultBadge = '';
+      if (scoreData) {
+        resultBadge = `<span class="sched-result" style="color:${scoreColor};border:1px solid ${scoreColor}44">${myScore}\u2013${oppScore}</span>`;
+      } else if (isLive) {
+        resultBadge = `<span class="sched-result" style="color:var(--gold);border-color:var(--gold-bdr);animation:pulse 1.5s infinite">LIVE</span>`;
+      } else if (isPlayed) {
+        resultBadge = `<span class="sched-result" style="opacity:0.5">\u2013</span>`;
+      }
+
+      const rowCls = ['sched-match', isPlayed&&!isLive?'played':'', isLive?'today':''].filter(Boolean).join(' ');
+      const rowBg = !isPlayed ? `background:rgba(${rgb},${isDark?0.08:0.05})` : '';
+      const nameStyle = isPlayed && !isLive ? 'text-decoration:line-through;opacity:0.55' : '';
+      const todayDot = isLive ? '<span class="sched-today-dot"></span>' : '';
 
       return `<div class="${rowCls}" style="${rowBg}">
         ${todayDot}
         <div class="sched-teams">
-          <span class="sched-team">${flagLg(myTeam)}&nbsp;<strong>${myTeam}</strong></span>
-          <span class="sched-vs">vs</span>
-          <span class="sched-team">${flagLg(oppTeam)}&nbsp;${oppTeam}&nbsp;${oppTag}</span>
+          <span class="sched-team">${flagLg(myTeam)}&nbsp;<strong style="${nameStyle}">${myTeam}</strong></span>
+          <span class="sched-vs" style="${nameStyle}">vs</span>
+          <span class="sched-team">${flagLg(oppTeam)}&nbsp;<span style="${nameStyle}">${oppTeam}</span>&nbsp;${!isPlayed?oppTag:''}</span>
         </div>
         <div class="sched-datetime">
-          <span class="sched-date">${m.date}</span>
+          <span class="sched-date" style="${isPlayed?'opacity:0.45':''}">${m.date}</span>
           ${!isPlayed ? `<span class="sched-time">${m.time}</span>` : ''}
           ${resultBadge}
         </div>
       </div>`;
     }).join('');
 
-    // Find next upcoming match
-    const nextMatch = myMatches.find(m => parseDateKey(m.date) >= todayNum);
+    // Next upcoming unplayed match
+    const nextMatch = myMatches.find(m => !state.matchScores[m.t1+'|'+m.t2] && parseDateKey(m.date) >= todayNum);
     const nextLabel = nextMatch
-      ? `<span style="font-size:0.68rem;color:${s.color};margin-left:auto;font-weight:600">${nextMatch.date} · ${nextMatch.time}</span>`
-      : `<span style="font-size:0.68rem;color:var(--muted);margin-left:auto">Group stage done</span>`;
+      ? `<span style="font-size:0.68rem;color:${s.color};margin-left:auto;font-weight:600">Next: ${nextMatch.date} \u00b7 ${nextMatch.time}</span>`
+      : `<span style="font-size:0.68rem;color:var(--muted);margin-left:auto">All played</span>`;
 
     const displayName = s.name;
 
@@ -1280,128 +1272,6 @@ function renderSchedule() {
   }).join('');
 }
 
-
-// ══════════════════════════════════════════
-// AUTO REFRESH — fetches live scores from
-// openfootball worldcup.json (no API key)
-// ══════════════════════════════════════════
-
-// Map openfootball team names → our team names
-const TEAM_NAME_MAP = {
-  'Czech Republic':'Czechia', 'Czechia':'Czechia',
-  'Bosnia and Herzegovina':'Bosnia-Herz','Bosnia & Herzegovina':'Bosnia-Herz',
-  'Korea Republic':'South Korea','South Korea':'South Korea',
-  'Ivory Coast':'Ivory Coast',"Côte d'Ivoire":'Ivory Coast',
-  'Curacao':'Curaçao','Curaçao':'Curaçao',
-  'Turkey':'Türkiye','Türkiye':'Türkiye',
-  'DR Congo':'DR Congo','Congo DR':'DR Congo','Democratic Republic of Congo':'DR Congo',
-  'Cape Verde':'Cape Verde','Cabo Verde':'Cape Verde',
-  'Saudi Arabia':'Saudi Arabia','New Zealand':'New Zealand',
-  'South Africa':'South Africa','Bosnia-Herz':'Bosnia-Herz',
-};
-
-function normTeam(name) {
-  if (!name) return name;
-  const mapped = TEAM_NAME_MAP[name.trim()];
-  return mapped || name.trim();
-}
-
-function findGroupForTeams(t1, t2) {
-  return Object.keys(GROUPS).find(g =>
-    GROUPS[g].includes(t1) && GROUPS[g].includes(t2)
-  );
-}
-
-async function autoRefresh() {
-  const btn = document.getElementById('refreshBtn');
-  const status = document.getElementById('refreshStatus');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin">⚽</span> Fetching...';
-  status.className = 'refresh-status';
-  status.textContent = 'Fetching live scores...';
-
-  try {
-    // Use openfootball worldcup.json — free, no API key, updated with results
-    const res = await fetch(
-      'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json',
-      {cache:'no-store'}
-    );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    // Reset standings to recompute fresh from API data
-    state.groupStandings = {};
-    state.matchScores = {};
-    initStandings();
-
-    // Also apply known results as baseline (in case API is behind)
-    // We'll let API data override them
-
-    let matchesApplied = 0;
-    let liveCount = 0;
-
-    // openfootball format: data.rounds[].matches[] OR data.matches[]
-    const allMatches = data.matches
-      || (data.rounds || []).flatMap(r => r.matches || [])
-      || [];
-
-    allMatches.forEach(m => {
-      // Only process finished matches (score exists)
-      if (!m.score || !m.score.ft) return;
-      const [s1, s2] = m.score.ft;
-      if (s1 === null || s2 === null) return;
-
-      const t1raw = m.team1?.name || m.team1;
-      const t2raw = m.team2?.name || m.team2;
-      const t1 = normTeam(t1raw);
-      const t2 = normTeam(t2raw);
-
-      const gLetter = findGroupForTeams(t1, t2);
-      if (!gLetter) return; // knockout or unrecognised
-
-      if (!state.groupStandings[gLetter]) initStandings();
-      const st = state.groupStandings[gLetter];
-      const r1 = st.find(r => r.team === t1);
-      const r2 = st.find(r => r.team === t2);
-      if (!r1 || !r2) return;
-
-      r1.gf += s1; r1.ga += s2;
-      r2.gf += s2; r2.ga += s1;
-      if (s1 > s2) { r1.w++; r2.l++; r1.p += 3; }
-      else if (s2 > s1) { r2.w++; r1.l++; r2.p += 3; }
-      else { r1.d++; r2.d++; r1.p++; r2.p++; }
-
-      state.matchScores[t1 + '|' + t2] = { s1, s2 };
-      state.matchScores[t2 + '|' + t1] = { s1: s2, s2: s1 };
-      matchesApplied++;
-    });
-
-    // Check for any live matches
-    allMatches.forEach(m => {
-      if (m.score && !m.score.ft && (m.score['1h'] || m.score.ht)) liveCount++;
-    });
-
-    render();
-
-    const now = new Date().toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'});
-    const liveNote = liveCount > 0 ? ` · ${liveCount} match(es) live ⚡` : '';
-    status.className = 'refresh-status ok';
-    status.textContent = `✓ Updated at ${now} AEST — ${matchesApplied} results loaded${liveNote}`;
-
-  } catch(e) {
-    console.error('Refresh error:', e);
-    status.className = 'refresh-status err';
-    status.textContent = `✗ Could not fetch scores (${e.message}) — try again or use the update box below`;
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '⚽ Refresh Scores';
-}
-
-// Auto-refresh on page load
-window.addEventListener('load', () => {
-  setTimeout(autoRefresh, 800);
-});
 
 function render() {
   renderLegend();
