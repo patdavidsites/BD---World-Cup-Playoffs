@@ -261,7 +261,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <div class="results-strip" id="resultsStrip" style="display:none"></div>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Tue 17 Jun (AEST)</div>
+  <div class="today-label">⚡ Today — Wed 18 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -362,35 +362,47 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['France',    'Senegal'],     time:'5:00am AEST',  venue:'East Rutherford'},
-  {teams:['Iraq',      'Norway'],      time:'8:00am AEST',  venue:'Foxborough'},
-  {teams:['Argentina', 'Algeria'],     time:'11:00am AEST', venue:'Kansas City'},
-  {teams:['Austria',   'Jordan'],      time:'2:00pm AEST',  venue:'Atlanta'},
+  {teams:['Portugal',   'DR Congo'],    time:'3:00am AEST',  venue:'Houston'},
+  {teams:['England',    'Croatia'],     time:'6:00am AEST',  venue:'Dallas'},
+  {teams:['Ghana',      'Panama'],      time:'9:00am AEST',  venue:'Toronto'},
+  {teams:['Uzbekistan', 'Colombia'],    time:'12:00pm AEST', venue:'Mexico City'},
 ];
 
 // Known results already played
 const KNOWN_RESULTS = [
-  // ── Jun 11 (AEST Jun 12) ──
+  // ── MATCHDAY 1 ──
+  // Group A — Jun 12 AEST
   {group:'A', t1:'Mexico',       s1:2, t2:'South Africa', s2:0},
   {group:'A', t1:'South Korea',  s1:2, t2:'Czechia',      s2:1},
-  // ── Jun 12 (AEST Jun 12-13) ──
+  // Group B — Jun 13 AEST
   {group:'B', t1:'Canada',       s1:1, t2:'Bosnia-Herz',  s2:1},
+  // Group D — Jun 13 AEST
   {group:'D', t1:'USA',          s1:4, t2:'Paraguay',     s2:1},
-  // ── Jun 13 (AEST Jun 13-14) ──
+  // Group B — Jun 14 AEST
   {group:'B', t1:'Qatar',        s1:1, t2:'Switzerland',  s2:1},
+  // Group C — Jun 14 AEST
   {group:'C', t1:'Brazil',       s1:1, t2:'Morocco',      s2:1},
   {group:'C', t1:'Haiti',        s1:0, t2:'Scotland',     s2:1},
-  // ── Jun 14 (AEST Jun 14-15) ──
+  // Group D — Jun 14-15 AEST
   {group:'D', t1:'Australia',    s1:2, t2:'Türkiye',      s2:0},
+  // Group E — Jun 15 AEST
   {group:'E', t1:'Germany',      s1:7, t2:'Curaçao',      s2:1},
-  {group:'F', t1:'Netherlands',  s1:2, t2:'Japan',        s2:2},
   {group:'E', t1:'Ivory Coast',  s1:1, t2:'Ecuador',      s2:0},
+  // Group F — Jun 15 AEST
+  {group:'F', t1:'Netherlands',  s1:2, t2:'Japan',        s2:2},
   {group:'F', t1:'Sweden',       s1:5, t2:'Tunisia',      s2:1},
-  // ── Jun 15 (AEST Jun 15-16) ──
-  {group:'H', t1:'Spain',        s1:0, t2:'Cape Verde',   s2:0},
+  // Group G — Jun 16 AEST
   {group:'G', t1:'Belgium',      s1:1, t2:'Egypt',        s2:1},
-  {group:'H', t1:'Saudi Arabia', s1:1, t2:'Uruguay',      s2:1},
   {group:'G', t1:'Iran',         s1:0, t2:'New Zealand',  s2:0},
+  // Group H — Jun 16 AEST
+  {group:'H', t1:'Spain',        s1:0, t2:'Cape Verde',   s2:0},
+  {group:'H', t1:'Saudi Arabia', s1:1, t2:'Uruguay',      s2:1},
+  // Group I — Jun 17 AEST
+  {group:'I', t1:'France',       s1:3, t2:'Senegal',      s2:1},
+  {group:'I', t1:'Iraq',         s1:1, t2:'Norway',       s2:4},
+  // Group J — Jun 17 AEST
+  {group:'J', t1:'Argentina',    s1:3, t2:'Algeria',      s2:0},
+  {group:'J', t1:'Austria',      s1:3, t2:'Jordan',       s2:1},
 ];
 
 const KNOCKOUT_ROUNDS = [
