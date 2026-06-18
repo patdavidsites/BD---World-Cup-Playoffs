@@ -261,7 +261,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <div class="results-strip" id="resultsStrip" style="display:none"></div>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Wed 18 Jun (AEST)</div>
+  <div class="today-label">⚡ Today — Thu 19 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -362,47 +362,41 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Portugal',   'DR Congo'],    time:'3:00am AEST',  venue:'Houston'},
-  {teams:['England',    'Croatia'],     time:'6:00am AEST',  venue:'Dallas'},
-  {teams:['Ghana',      'Panama'],      time:'9:00am AEST',  venue:'Toronto'},
-  {teams:['Uzbekistan', 'Colombia'],    time:'12:00pm AEST', venue:'Mexico City'},
+  {teams:['Czechia',       'South Africa'],  time:'2:00am AEST',  venue:'Atlanta'},
+  {teams:['Switzerland',   'Bosnia-Herz'],   time:'5:00am AEST',  venue:'Los Angeles'},
+  {teams:['Canada',        'Qatar'],         time:'8:00am AEST',  venue:'Vancouver'},
+  {teams:['Mexico',        'South Korea'],   time:'1:00pm AEST',  venue:'Guadalajara'},
 ];
 
 // Known results already played
 const KNOWN_RESULTS = [
   // ── MATCHDAY 1 ──
-  // Group A — Jun 12 AEST
   {group:'A', t1:'Mexico',       s1:2, t2:'South Africa', s2:0},
   {group:'A', t1:'South Korea',  s1:2, t2:'Czechia',      s2:1},
-  // Group B — Jun 13 AEST
   {group:'B', t1:'Canada',       s1:1, t2:'Bosnia-Herz',  s2:1},
-  // Group D — Jun 13 AEST
   {group:'D', t1:'USA',          s1:4, t2:'Paraguay',     s2:1},
-  // Group B — Jun 14 AEST
   {group:'B', t1:'Qatar',        s1:1, t2:'Switzerland',  s2:1},
-  // Group C — Jun 14 AEST
   {group:'C', t1:'Brazil',       s1:1, t2:'Morocco',      s2:1},
   {group:'C', t1:'Haiti',        s1:0, t2:'Scotland',     s2:1},
-  // Group D — Jun 14-15 AEST
   {group:'D', t1:'Australia',    s1:2, t2:'Türkiye',      s2:0},
-  // Group E — Jun 15 AEST
   {group:'E', t1:'Germany',      s1:7, t2:'Curaçao',      s2:1},
   {group:'E', t1:'Ivory Coast',  s1:1, t2:'Ecuador',      s2:0},
-  // Group F — Jun 15 AEST
   {group:'F', t1:'Netherlands',  s1:2, t2:'Japan',        s2:2},
   {group:'F', t1:'Sweden',       s1:5, t2:'Tunisia',      s2:1},
-  // Group G — Jun 16 AEST
-  {group:'G', t1:'Belgium',      s1:1, t2:'Egypt',        s2:1},
-  {group:'G', t1:'Iran',         s1:0, t2:'New Zealand',  s2:0},
-  // Group H — Jun 16 AEST
   {group:'H', t1:'Spain',        s1:0, t2:'Cape Verde',   s2:0},
+  {group:'G', t1:'Belgium',      s1:1, t2:'Egypt',        s2:1},
   {group:'H', t1:'Saudi Arabia', s1:1, t2:'Uruguay',      s2:1},
-  // Group I — Jun 17 AEST
+  {group:'G', t1:'Iran',         s1:0, t2:'New Zealand',  s2:0},
+  // ── MATCHDAY 2 (Group I, J) ──
   {group:'I', t1:'France',       s1:3, t2:'Senegal',      s2:1},
   {group:'I', t1:'Iraq',         s1:1, t2:'Norway',       s2:4},
-  // Group J — Jun 17 AEST
   {group:'J', t1:'Argentina',    s1:3, t2:'Algeria',      s2:0},
   {group:'J', t1:'Austria',      s1:3, t2:'Jordan',       s2:1},
+  // ── MATCHDAY 1 (Group K, L) ──
+  {group:'K', t1:'Portugal',     s1:1, t2:'DR Congo',     s2:1},
+  {group:'L', t1:'England',      s1:4, t2:'Croatia',      s2:2},
+  {group:'L', t1:'Ghana',        s1:1, t2:'Panama',       s2:0},
+  {group:'K', t1:'Uzbekistan',   s1:1, t2:'Colombia',     s2:3},
 ];
 
 const KNOCKOUT_ROUNDS = [
@@ -1302,6 +1296,132 @@ function render() {
   renderMyTeams();
   renderSchedule();
 }
+
+// ══════════════════════════════════════════
+// AUTO REFRESH — fetches live scores
+// Uses CORS proxy to bypass browser restrictions
+// ══════════════════════════════════════════
+
+const TEAM_NAME_MAP = {
+  'Czech Republic':'Czechia','Czech Rep.':'Czechia',
+  'Bosnia and Herzegovina':'Bosnia-Herz','Bosnia & Herzegovina':'Bosnia-Herz','Bosnia-Herzegovina':'Bosnia-Herz',
+  'Korea Republic':'South Korea','Republic of Korea':'South Korea',
+  "Côte d'Ivoire":'Ivory Coast','Cote d\'Ivoire':'Ivory Coast',
+  'Curacao':'Curaçao','Curaçao':'Curaçao',
+  'Turkey':'Türkiye','Turkiye':'Türkiye',
+  'DR Congo':'DR Congo','Congo DR':'DR Congo','Congo, DR':'DR Congo',
+  'Democratic Republic of Congo':'DR Congo','Democratic Republic of the Congo':'DR Congo',
+  'Cape Verde':'Cape Verde','Cabo Verde':'Cape Verde',
+  'New Zealand':'New Zealand','Saudi Arabia':'Saudi Arabia',
+  'South Africa':'South Africa','South Korea':'South Korea',
+};
+
+function normTeam(name) {
+  if (!name) return '';
+  const trimmed = name.trim();
+  return TEAM_NAME_MAP[trimmed] || trimmed;
+}
+
+function findGroupForTeams(t1, t2) {
+  return Object.keys(GROUPS).find(g => GROUPS[g].includes(t1) && GROUPS[g].includes(t2)) || null;
+}
+
+async function autoRefresh() {
+  const btn = document.getElementById('refreshBtn');
+  const status = document.getElementById('refreshStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⚽</span> Fetching...';
+  status.className = 'refresh-status';
+  status.textContent = 'Fetching live scores...';
+
+  const RAW_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+  const PROXY_URLS = [
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(RAW_URL),
+    'https://corsproxy.io/?' + encodeURIComponent(RAW_URL),
+  ];
+
+  let data = null;
+  for (const url of PROXY_URLS) {
+    try {
+      const res = await fetch(url, {cache:'no-store'});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = await res.json();
+      if (data) break;
+    } catch(e) {
+      console.warn('Refresh attempt failed:', e.message);
+    }
+  }
+
+  // Reset standings to rebuild fresh
+  state.groupStandings = {};
+  state.matchScores = {};
+  initStandings();
+
+  let matchesApplied = 0;
+
+  if (data) {
+    // openfootball format: { rounds: [{ matches: [{ team1, team2, score: { ft: [n,n] } }] }] }
+    const rounds = data.rounds || data.matches && [{matches: data.matches}] || [];
+    rounds.forEach(round => {
+      (round.matches || []).forEach(m => {
+        if (!m.score || !m.score.ft) return;
+        const [s1, s2] = m.score.ft;
+        if (s1 == null || s2 == null) return;
+
+        const t1 = normTeam(typeof m.team1 === 'string' ? m.team1 : m.team1?.name || '');
+        const t2 = normTeam(typeof m.team2 === 'string' ? m.team2 : m.team2?.name || '');
+        if (!t1 || !t2) return;
+
+        const gLetter = findGroupForTeams(t1, t2);
+        if (!gLetter) return;
+
+        if (!state.groupStandings[gLetter]) initStandings();
+        const st = state.groupStandings[gLetter];
+        const r1 = st.find(r => r.team === t1);
+        const r2 = st.find(r => r.team === t2);
+        if (!r1 || !r2) return;
+
+        r1.gf += s1; r1.ga += s2;
+        r2.gf += s2; r2.ga += s1;
+        if (s1 > s2)      { r1.w++; r2.l++; r1.p += 3; }
+        else if (s2 > s1) { r2.w++; r1.l++; r2.p += 3; }
+        else              { r1.d++; r2.d++; r1.p++; r2.p++; }
+
+        state.matchScores[t1+'|'+t2] = {s1, s2};
+        state.matchScores[t2+'|'+t1] = {s1:s2, s2:s1};
+        matchesApplied++;
+      });
+    });
+  }
+
+  // If API had no data, fall back to hardcoded results
+  if (matchesApplied === 0) {
+    state.groupStandings = {};
+    state.matchScores = {};
+    initStandings();
+    applyKnownResults();
+  }
+
+  // Always call renderSchedule so strikethroughs + scores update
+  render();
+
+  const now = new Date().toLocaleTimeString('en-AU', {
+    hour:'2-digit', minute:'2-digit', timeZone:'Australia/Sydney'
+  });
+
+  status.className = 'refresh-status ok';
+  if (matchesApplied > 0) {
+    status.textContent = '✓ ' + now + ' AEST — ' + matchesApplied + ' results loaded from live feed';
+  } else {
+    status.textContent = '✓ ' + now + ' AEST — live feed pending, showing latest known results';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '⚽ Refresh Scores';
+}
+
+// Auto-refresh on load (slight delay so page renders first)
+window.addEventListener('load', () => setTimeout(autoRefresh, 1000));
 
 initStandings();
 applyKnownResults();
