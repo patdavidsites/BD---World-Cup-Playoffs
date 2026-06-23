@@ -261,7 +261,7 @@ button.apply-btn:hover { opacity: 0.88; }
 <div class="results-strip" id="resultsStrip" style="display:none"></div>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Tue 23 Jun (AEST)</div>
+  <div class="today-label">⚡ Today — Wed 24 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -362,77 +362,83 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Argentina', 'Austria'],  time:'3:00am AEST',  venue:'Dallas'},
-  {teams:['France',    'Iraq'],     time:'7:00am AEST',  venue:'Philadelphia'},
-  {teams:['Norway',    'Senegal'],  time:'10:00am AEST', venue:'East Rutherford'},
-  {teams:['Jordan',    'Algeria'],  time:'1:00pm AEST',  venue:'Los Angeles'},
+  {teams:['Portugal',  'Uzbekistan'], time:'3:00am AEST',  venue:'Houston'},
+  {teams:['England',   'Ghana'],      time:'6:00am AEST',  venue:'Foxborough'},
+  {teams:['Panama',    'Croatia'],    time:'9:00am AEST',  venue:'Toronto'},
+  {teams:['Colombia',  'DR Congo'],   time:'12:00pm AEST', venue:'Guadalajara'},
 ];
 
 // Known results already played
 const KNOWN_RESULTS = [
   // ── MATCHDAY 1 ──
   // Group A
-  {group:'A', t1:'Mexico',       s1:2, t2:'South Africa', s2:0},
-  {group:'A', t1:'South Korea',  s1:2, t2:'Czechia',      s2:1},
+  {group:'A', t1:'Mexico',       s1:2,  t2:'South Africa', s2:0},
+  {group:'A', t1:'South Korea',  s1:2,  t2:'Czechia',      s2:1},
   // Group B
-  {group:'B', t1:'Canada',       s1:1, t2:'Bosnia-Herz',  s2:1},
-  {group:'B', t1:'Qatar',        s1:1, t2:'Switzerland',  s2:1},
+  {group:'B', t1:'Canada',       s1:1,  t2:'Bosnia-Herz',  s2:1},
+  {group:'B', t1:'Qatar',        s1:1,  t2:'Switzerland',  s2:1},
   // Group C
-  {group:'C', t1:'Brazil',       s1:1, t2:'Morocco',      s2:1},
-  {group:'C', t1:'Haiti',        s1:0, t2:'Scotland',     s2:1},
+  {group:'C', t1:'Brazil',       s1:1,  t2:'Morocco',      s2:1},
+  {group:'C', t1:'Haiti',        s1:0,  t2:'Scotland',     s2:1},
   // Group D
-  {group:'D', t1:'USA',          s1:4, t2:'Paraguay',     s2:1},
-  {group:'D', t1:'Australia',    s1:2, t2:'Türkiye',      s2:0},
+  {group:'D', t1:'USA',          s1:4,  t2:'Paraguay',     s2:1},
+  {group:'D', t1:'Australia',    s1:2,  t2:'Türkiye',      s2:0},
   // Group E
-  {group:'E', t1:'Germany',      s1:7, t2:'Curaçao',      s2:1},
-  {group:'E', t1:'Ivory Coast',  s1:1, t2:'Ecuador',      s2:0},
+  {group:'E', t1:'Germany',      s1:7,  t2:'Curaçao',      s2:1},
+  {group:'E', t1:'Ivory Coast',  s1:1,  t2:'Ecuador',      s2:0},
   // Group F
-  {group:'F', t1:'Netherlands',  s1:2, t2:'Japan',        s2:2},
-  {group:'F', t1:'Sweden',       s1:5, t2:'Tunisia',      s2:1},
+  {group:'F', t1:'Netherlands',  s1:2,  t2:'Japan',        s2:2},
+  {group:'F', t1:'Sweden',       s1:5,  t2:'Tunisia',      s2:1},
   // Group G
-  {group:'G', t1:'Belgium',      s1:1, t2:'Egypt',        s2:1},
-  {group:'G', t1:'Iran',         s1:2, t2:'New Zealand',  s2:2},
+  {group:'G', t1:'Belgium',      s1:1,  t2:'Egypt',        s2:1},
+  {group:'G', t1:'Iran',         s1:2,  t2:'New Zealand',  s2:2},
   // Group H
-  {group:'H', t1:'Spain',        s1:0, t2:'Cape Verde',   s2:0},
-  {group:'H', t1:'Saudi Arabia', s1:1, t2:'Uruguay',      s2:1},
+  {group:'H', t1:'Spain',        s1:0,  t2:'Cape Verde',   s2:0},
+  {group:'H', t1:'Saudi Arabia', s1:1,  t2:'Uruguay',      s2:1},
   // Group I
-  {group:'I', t1:'France',       s1:3, t2:'Senegal',      s2:1},
-  {group:'I', t1:'Iraq',         s1:1, t2:'Norway',       s2:4},
+  {group:'I', t1:'France',       s1:3,  t2:'Senegal',      s2:1},
+  {group:'I', t1:'Iraq',         s1:1,  t2:'Norway',       s2:4},
   // Group J
-  {group:'J', t1:'Argentina',    s1:3, t2:'Algeria',      s2:0},
-  {group:'J', t1:'Austria',      s1:3, t2:'Jordan',       s2:1},
+  {group:'J', t1:'Argentina',    s1:3,  t2:'Algeria',      s2:0},
+  {group:'J', t1:'Austria',      s1:3,  t2:'Jordan',       s2:1},
   // Group K
-  {group:'K', t1:'Portugal',     s1:1, t2:'DR Congo',     s2:1},
-  {group:'K', t1:'Uzbekistan',   s1:1, t2:'Colombia',     s2:3},
+  {group:'K', t1:'Portugal',     s1:1,  t2:'DR Congo',     s2:1},
+  {group:'K', t1:'Uzbekistan',   s1:1,  t2:'Colombia',     s2:3},
   // Group L
-  {group:'L', t1:'England',      s1:4, t2:'Croatia',      s2:2},
-  {group:'L', t1:'Ghana',        s1:1, t2:'Panama',       s2:0},
+  {group:'L', t1:'England',      s1:4,  t2:'Croatia',      s2:2},
+  {group:'L', t1:'Ghana',        s1:1,  t2:'Panama',       s2:0},
 
   // ── MATCHDAY 2 ──
-  // Group A (Jun 19 ET / Jun 19-20 AEST)
-  {group:'A', t1:'Czechia',      s1:1, t2:'South Africa', s2:1},
-  {group:'A', t1:'Mexico',       s1:1, t2:'South Korea',  s2:0},
-  // Group B (Jun 18-19 ET / Jun 19 AEST)
-  {group:'B', t1:'Switzerland',  s1:4, t2:'Bosnia-Herz',  s2:1},
-  {group:'B', t1:'Canada',       s1:6, t2:'Qatar',        s2:0},
-  // Group C (Jun 19-20 ET / Jun 20 AEST)
-  {group:'C', t1:'Scotland',     s1:0, t2:'Morocco',      s2:1},
-  {group:'C', t1:'Brazil',       s1:3, t2:'Haiti',        s2:0},
-  // Group D (Jun 19-20 ET / Jun 20 AEST)
-  {group:'D', t1:'USA',          s1:2, t2:'Australia',    s2:0},
-  {group:'D', t1:'Türkiye',      s1:0, t2:'Paraguay',     s2:1},
-  // Group E (Jun 20-21 ET / Jun 21 AEST)
-  {group:'E', t1:'Germany',      s1:2, t2:'Ivory Coast',  s2:1},
-  {group:'E', t1:'Ecuador',      s1:0, t2:'Curaçao',      s2:0},
-  // Group F (Jun 20-21 ET / Jun 21 AEST)
-  {group:'F', t1:'Netherlands',  s1:5, t2:'Sweden',       s2:1},
-  {group:'F', t1:'Tunisia',      s1:0, t2:'Japan',        s2:4},
-  // Group G (Jun 21-22 ET / Jun 22 AEST)
-  {group:'G', t1:'Belgium',      s1:0, t2:'Iran',         s2:0},
-  {group:'G', t1:'Egypt',        s1:3, t2:'New Zealand',  s2:1},
-  // Group H (Jun 21-22 ET / Jun 22 AEST)
-  {group:'H', t1:'Spain',        s1:4, t2:'Saudi Arabia', s2:0},
-  {group:'H', t1:'Uruguay',      s1:2, t2:'Cape Verde',   s2:2},
+  // Group A
+  {group:'A', t1:'Czechia',      s1:1,  t2:'South Africa', s2:1},
+  {group:'A', t1:'Mexico',       s1:1,  t2:'South Korea',  s2:0},
+  // Group B
+  {group:'B', t1:'Switzerland',  s1:4,  t2:'Bosnia-Herz',  s2:1},
+  {group:'B', t1:'Canada',       s1:6,  t2:'Qatar',        s2:0},
+  // Group C
+  {group:'C', t1:'Scotland',     s1:0,  t2:'Morocco',      s2:1},
+  {group:'C', t1:'Brazil',       s1:3,  t2:'Haiti',        s2:0},
+  // Group D
+  {group:'D', t1:'USA',          s1:2,  t2:'Australia',    s2:0},
+  {group:'D', t1:'Türkiye',      s1:0,  t2:'Paraguay',     s2:1},
+  // Group E
+  {group:'E', t1:'Germany',      s1:2,  t2:'Ivory Coast',  s2:1},
+  {group:'E', t1:'Ecuador',      s1:0,  t2:'Curaçao',      s2:0},
+  // Group F
+  {group:'F', t1:'Netherlands',  s1:5,  t2:'Sweden',       s2:1},
+  {group:'F', t1:'Tunisia',      s1:0,  t2:'Japan',        s2:4},
+  // Group G
+  {group:'G', t1:'Belgium',      s1:0,  t2:'Iran',         s2:0},
+  {group:'G', t1:'Egypt',        s1:3,  t2:'New Zealand',  s2:1},
+  // Group H
+  {group:'H', t1:'Spain',        s1:4,  t2:'Saudi Arabia', s2:0},
+  {group:'H', t1:'Uruguay',      s1:2,  t2:'Cape Verde',   s2:2},
+  // Group I — Jun 22 ET / Jun 23 AEST
+  {group:'I', t1:'France',       s1:3,  t2:'Iraq',         s2:0},
+  {group:'I', t1:'Norway',       s1:3,  t2:'Senegal',      s2:2},
+  // Group J — Jun 22 ET / Jun 23 AEST
+  {group:'J', t1:'Argentina',    s1:2,  t2:'Austria',      s2:0},
+  {group:'J', t1:'Algeria',      s1:2,  t2:'Jordan',       s2:1},
 ];
 
 const KNOCKOUT_ROUNDS = [
