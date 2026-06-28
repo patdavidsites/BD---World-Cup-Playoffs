@@ -337,6 +337,46 @@ button.apply-btn:hover { opacity: 0.88; }
 .winner-banner-sub { font-size:0.78rem; color:var(--text2); margin-top:2px; }
 
 /* RESULTS STRIP */
+.alive-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  min-height: 44px;
+}
+.alive-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.alive-team {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.55rem 0.22rem 0.3rem;
+  border-radius: 20px;
+  border: 1px solid;
+  font-size: 0.73rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.alive-team img { border-radius: 2px; flex-shrink: 0; }
+.alive-team-name { color: var(--text); }
+.alive-owner-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  color: #fff;
+  flex-shrink: 0;
+}
 .results-strip { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.5rem 2rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .result-label { font-family: 'Oswald', sans-serif; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
 .result-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.72rem; display: flex; align-items: center; gap: 0.4rem; }
@@ -355,12 +395,12 @@ button.apply-btn:hover { opacity: 0.88; }
   </div>
 </header>
 
-<div class="results-strip" id="resultsStrip" style="display:none"></div>
-
 <div class="today-strip">
   <div class="today-label">⚡ Today — Mon 30 Jun (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
+
+<div class="alive-strip" id="aliveStrip"></div>
 
 <div class="legend">
   <span class="legend-title">Players:&nbsp;</span>
@@ -676,8 +716,6 @@ function initKnockout() {
       }
     });
   });
-};
-  }));
 }
 
 // ══════════════════════════════════════════
@@ -875,7 +913,10 @@ function getKOGameData(id) {
 }
 
 function kTeamRowNew(team, score, isW, isL) {
-  if (!team) return `<div class="k-team-row k-tbd"><div class="k-badge-sm" style="background:var(--surface3);color:var(--muted)">?</div><span class="k-name-sm">TBD</span></div>`;
+  if (!team) return `<div class="k-team-row k-tbd">
+    <span style="font-size:0.75rem;opacity:0.3">🏳</span>
+    <span class="k-name-sm">TBD</span>
+  </div>`;
   const sf = staffFor(team);
   const rgb = sf ? hexToRgb(sf.color) : null;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -886,11 +927,7 @@ function kTeamRowNew(team, score, isW, isL) {
 
   // Full name tag — always show full player name
   const nameTag = sf
-    ? `<span style="
-        font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:4px;
-        background:${sf.color};color:#fff;white-space:nowrap;flex-shrink:0;
-        letter-spacing:0.01em;
-      ">${sf.name}</span>`
+    ? `<span style="font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:4px;background:${sf.color};color:#fff;white-space:nowrap;flex-shrink:0;letter-spacing:0.01em">${sf.name}</span>`
     : '';
 
   return `<div class="k-team-row ${cls}" style="${rowBg}">
@@ -1494,10 +1531,71 @@ function renderSchedule() {
 }
 
 
+// ══════════════════════════════════════════
+// RENDER: STILL ALIVE IN KNOCKOUT
+// ══════════════════════════════════════════
+
+function renderAliveStrip() {
+  const el = document.getElementById('aliveStrip');
+  if (!el) return;
+
+  // Collect all teams still in the knockout stage
+  // A team is "alive" if it appears in KNOCKOUT_ROUNDS but hasn't lost yet
+  const eliminated = new Set();
+  const inKnockout = new Set();
+
+  KNOCKOUT_ROUNDS.forEach(round => {
+    round.games.forEach(g => {
+      const gData = getKOGameData(g.id);
+      if (gData.team1) inKnockout.add(gData.team1);
+      if (gData.team2) inKnockout.add(gData.team2);
+      // The loser is eliminated
+      if (gData.winner) {
+        const loser = gData.winner === gData.team1 ? gData.team2 : gData.team1;
+        if (loser) eliminated.add(loser);
+      }
+    });
+  });
+
+  const aliveTeams = [...inKnockout].filter(t => !eliminated.has(t));
+
+  if (aliveTeams.length === 0) {
+    el.style.display = 'none';
+    return;
+  }
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  // Group by player so we can sort by player
+  const byPlayer = {};
+  aliveTeams.forEach(team => {
+    const sf = staffFor(team);
+    const key = sf ? sf.name : '?';
+    if (!byPlayer[key]) byPlayer[key] = { sf, teams: [] };
+    byPlayer[key].teams.push(team);
+  });
+
+  const html = Object.values(byPlayer).map(({ sf, teams }) => {
+    if (!sf) return '';
+    const rgb = hexToRgb(sf.color);
+    return teams.map(team => {
+      const code = FLAG_CODES[team] || 'un';
+      return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
+        <img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${team}">
+        <span class="alive-team-name">${team}</span>
+        <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
+      </div>`;
+    }).join('');
+  }).join('');
+
+  el.style.display = 'flex';
+  el.innerHTML = `<span class="alive-label">🟢 Still alive (${aliveTeams.length})</span>${html}`;
+}
+
 function render() {
   renderLegend();
-  renderResultsStrip();
   renderToday();
+  renderAliveStrip();
   renderGroups();
   renderKnockout();
   renderMyTeams();
