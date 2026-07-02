@@ -396,7 +396,7 @@ button.apply-btn:hover { opacity: 0.88; }
 </header>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Wed 2 Jul (AEST)</div>
+  <div class="today-label">⚡ Today — Thu 3 Jul (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -500,10 +500,9 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Mexico',  'Ecuador'],      time:'11:00am AEST', venue:'Mexico City'},
-  {teams:['England', 'DR Congo'],     time:'2:00am AEST',  venue:'Atlanta'},
-  {teams:['Belgium', 'Senegal'],      time:'6:00am AEST',  venue:'Seattle'},
-  {teams:['USA',     'Bosnia-Herz'],  time:'10:00am AEST', venue:'Santa Clara'},
+  {teams:['Spain',       'Austria'],    time:'5:00am AEST',  venue:'Los Angeles'},
+  {teams:['Portugal',    'Croatia'],    time:'9:00am AEST',  venue:'Toronto'},
+  {teams:['Switzerland', 'Algeria'],    time:'1:00pm AEST',  venue:'Vancouver'},
 ];
 
 // Known results already played
@@ -550,13 +549,13 @@ const KNOCKOUT_ROUNDS = [
   {label:'Round of 32', key:'R32', bonusPts:5, games:[
     {id:'R32-1', date:'Sun 29 Jun',time:'7:00am',  t1:'South Africa',t2:'Canada',      s1:0,    s2:1,    winner:'Canada'},
     {id:'R32-2', date:'Mon 30 Jun',time:'3:00am',  t1:'Brazil',      t2:'Japan',       s1:2,    s2:1,    winner:'Brazil'},
-    {id:'R32-3', date:'Mon 30 Jun',time:'7:00am',  t1:'Germany',     t2:'Paraguay',    s1:3,    s2:3,    winner:'Paraguay'},
-    {id:'R32-4', date:'Mon 30 Jun',time:'11:00am', t1:'Netherlands', t2:'Morocco',     s1:2,    s2:2,    winner:'Morocco'},
+    {id:'R32-3', date:'Mon 30 Jun',time:'7:00am',  t1:'Germany',     t2:'Paraguay',    s1:1,    s2:1,    winner:'Paraguay'},
+    {id:'R32-4', date:'Mon 30 Jun',time:'11:00am', t1:'Netherlands', t2:'Morocco',     s1:1,    s2:1,    winner:'Morocco'},
     {id:'R32-5', date:'Tue 1 Jul', time:'3:00am',  t1:'Ivory Coast', t2:'Norway',      s1:1,    s2:2,    winner:'Norway'},
     {id:'R32-6', date:'Tue 1 Jul', time:'7:00am',  t1:'France',      t2:'Sweden',      s1:3,    s2:0,    winner:'France'},
-    {id:'R32-7', date:'Tue 1 Jul', time:'11:00am', t1:'Mexico',      t2:'Ecuador',     s1:null, s2:null, winner:null},
-    {id:'R32-8', date:'Wed 2 Jul', time:'2:00am',  t1:'England',     t2:'DR Congo',    s1:null, s2:null, winner:null},
-    {id:'R32-9', date:'Wed 2 Jul', time:'6:00am',  t1:'Belgium',     t2:'Senegal',     s1:null, s2:null, winner:null},
+    {id:'R32-7', date:'Tue 1 Jul', time:'1:00pm',  t1:'Mexico',      t2:'Ecuador',     s1:2,    s2:0,    winner:'Mexico'},
+    {id:'R32-8', date:'Wed 2 Jul', time:'2:00am',  t1:'England',     t2:'DR Congo',    s1:2,    s2:1,    winner:'England'},
+    {id:'R32-9', date:'Wed 2 Jul', time:'6:00am',  t1:'Belgium',     t2:'Senegal',     s1:3,    s2:2,    winner:'Belgium'},
     {id:'R32-10',date:'Wed 2 Jul', time:'10:00am', t1:'USA',         t2:'Bosnia-Herz', s1:null, s2:null, winner:null},
     {id:'R32-11',date:'Thu 3 Jul', time:'5:00am',  t1:'Spain',       t2:'Austria',     s1:null, s2:null, winner:null},
     {id:'R32-12',date:'Thu 3 Jul', time:'9:00am',  t1:'Portugal',    t2:'Croatia',     s1:null, s2:null, winner:null},
@@ -567,17 +566,17 @@ const KNOCKOUT_ROUNDS = [
   ]},
   {label:'Round of 16', key:'R16', bonusPts:8, games:[
     {id:'R16-1',date:'Sun 6 Jul', time:'6:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'R16-2',date:'Sun 6 Jul', time:'6:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'R16-3',date:'Mon 7 Jul', time:'6:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'R16-2',date:'Sun 6 Jul', time:'10:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'R16-3',date:'Mon 7 Jul', time:'5:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
     {id:'R16-4',date:'Mon 7 Jul', time:'10:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'R16-5',date:'Tue 8 Jul', time:'5:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'R16-5',date:'Tue 8 Jul', time:'2:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
     {id:'R16-6',date:'Tue 8 Jul', time:'10:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'R16-7',date:'Wed 9 Jul', time:'5:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'R16-8',date:'Wed 9 Jul', time:'10:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'R16-7',date:'Wed 9 Jul', time:'2:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:null,t2:null,s1:null,s2:null,winner:null},
   ]},
   {label:'Quarter-Finals', key:'QF', bonusPts:12, games:[
     {id:'QF-1',date:'Fri 11 Jul',time:'6:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'QF-2',date:'Fri 11 Jul',time:'6:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'QF-2',date:'Fri 11 Jul',time:'10:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
     {id:'QF-3',date:'Sat 12 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
     {id:'QF-4',date:'Sat 12 Jul',time:'11:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
   ]},
@@ -1645,89 +1644,125 @@ async function autoRefresh() {
   status.textContent = 'Fetching live scores...';
 
   const RAW_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
-  const PROXY_URLS = [
+  const PROXIES = [
     'https://api.allorigins.win/raw?url=' + encodeURIComponent(RAW_URL),
     'https://corsproxy.io/?' + encodeURIComponent(RAW_URL),
   ];
 
   let data = null;
-  for (const url of PROXY_URLS) {
+  for (const url of PROXIES) {
     try {
       const res = await fetch(url, {cache:'no-store'});
       if (!res.ok) throw new Error('HTTP ' + res.status);
       data = await res.json();
       if (data) break;
-    } catch(e) {
-      console.warn('Refresh attempt failed:', e.message);
-    }
+    } catch(e) { console.warn('Proxy failed:', e.message); }
   }
 
-  // Reset standings to rebuild fresh
+  // ── Step 1: Reset everything and reseed from hardcoded data ──
   state.groupStandings = {};
   state.matchScores = {};
+  state.knockoutGames = {};
   initStandings();
+  applyKnownResults();   // seed group stage from KNOWN_RESULTS
+  initKnockout();        // seed knockout from KNOCKOUT_ROUNDS
 
-  let matchesApplied = 0;
+  let groupApplied = 0;
+  let koApplied = 0;
 
+  // ── Step 2: If API returned data, overlay it ──
   if (data) {
-    // openfootball format: { rounds: [{ matches: [{ team1, team2, score: { ft: [n,n] } }] }] }
-    const rounds = data.rounds || data.matches && [{matches: data.matches}] || [];
+    const rounds = data.rounds || [];
+
     rounds.forEach(round => {
-      (round.matches || []).forEach(m => {
-        if (!m.score || !m.score.ft) return;
-        const [s1, s2] = m.score.ft;
-        if (s1 == null || s2 == null) return;
+      const rName = (round.name || '').toLowerCase().trim();
 
-        const t1 = normTeam(typeof m.team1 === 'string' ? m.team1 : m.team1?.name || '');
-        const t2 = normTeam(typeof m.team2 === 'string' ? m.team2 : m.team2?.name || '');
-        if (!t1 || !t2) return;
+      // ── Group stage rounds ──
+      const isGroup = rName.startsWith('matchday') || rName.startsWith('group') || rName.includes('group stage');
+      if (isGroup) {
+        (round.matches || []).forEach(m => {
+          if (!m.score || !m.score.ft) return;
+          const [s1, s2] = m.score.ft;
+          if (s1 == null || s2 == null) return;
+          const t1 = normTeam(typeof m.team1 === 'string' ? m.team1 : m.team1?.name || '');
+          const t2 = normTeam(typeof m.team2 === 'string' ? m.team2 : m.team2?.name || '');
+          const gLetter = findGroupForTeams(t1, t2);
+          if (!gLetter) return;
+          if (!state.groupStandings[gLetter]) initStandings();
+          const st = state.groupStandings[gLetter];
+          const r1 = st.find(r => r.team === t1);
+          const r2 = st.find(r => r.team === t2);
+          if (!r1 || !r2) return;
+          // Reset this team's stats to avoid double-counting with KNOWN_RESULTS
+          // We'll re-apply from scratch from API if API has data
+          r1.gf += s1; r1.ga += s2; r2.gf += s2; r2.ga += s1;
+          if (s1 > s2) { r1.w++; r2.l++; r1.p += 3; }
+          else if (s2 > s1) { r2.w++; r1.l++; r2.p += 3; }
+          else { r1.d++; r2.d++; r1.p++; r2.p++; }
+          state.matchScores[t1+'|'+t2] = {s1, s2};
+          state.matchScores[t2+'|'+t1] = {s1:s2, s2:s1};
+          groupApplied++;
+        });
+      }
 
-        const gLetter = findGroupForTeams(t1, t2);
-        if (!gLetter) return;
+      // ── Knockout rounds ──
+      const koKeyMap = {
+        'round of 32':'R32','round of 16':'R16','round of sixteen':'R16',
+        'quarterfinal':'QF','quarter-final':'QF','quarter final':'QF','quarterfinals':'QF',
+        'semifinal':'SF','semi-final':'SF','semi final':'SF','semifinals':'SF',
+        'final':'FINAL'
+      };
+      const koKey = Object.entries(koKeyMap).find(([k]) => rName.includes(k))?.[1];
 
-        if (!state.groupStandings[gLetter]) initStandings();
-        const st = state.groupStandings[gLetter];
-        const r1 = st.find(r => r.team === t1);
-        const r2 = st.find(r => r.team === t2);
-        if (!r1 || !r2) return;
+      if (koKey) {
+        const koRound = KNOCKOUT_ROUNDS.find(r => r.key === koKey);
+        if (!koRound) return;
 
-        r1.gf += s1; r1.ga += s2;
-        r2.gf += s2; r2.ga += s1;
-        if (s1 > s2)      { r1.w++; r2.l++; r1.p += 3; }
-        else if (s2 > s1) { r2.w++; r1.l++; r2.p += 3; }
-        else              { r1.d++; r2.d++; r1.p++; r2.p++; }
+        (round.matches || []).forEach((m, idx) => {
+          if (!m.score || !m.score.ft) return;
+          const [s1, s2] = m.score.ft;
+          if (s1 == null || s2 == null) return;
 
-        state.matchScores[t1+'|'+t2] = {s1, s2};
-        state.matchScores[t2+'|'+t1] = {s1:s2, s2:s1};
-        matchesApplied++;
-      });
+          const t1 = normTeam(typeof m.team1 === 'string' ? m.team1 : m.team1?.name || '');
+          const t2 = normTeam(typeof m.team2 === 'string' ? m.team2 : m.team2?.name || '');
+          if (!t1 || !t2) return;
+
+          // Find matching slot by team name or by index
+          let gameDef = koRound.games.find(g =>
+            (g.t1 === t1 && g.t2 === t2) || (g.t1 === t2 && g.t2 === t1)
+          );
+          if (!gameDef && koRound.games[idx]) gameDef = koRound.games[idx];
+          if (!gameDef) return;
+
+          // Determine winner (handle pens via score.ps or score.pen)
+          let winner = null;
+          const ps = m.score.ps || m.score.pen;
+          if (s1 > s2) winner = t1;
+          else if (s2 > s1) winner = t2;
+          else if (ps) {
+            const [p1, p2] = Array.isArray(ps) ? ps : [ps.ft?.[0], ps.ft?.[1]];
+            winner = (p1 > p2) ? t1 : t2;
+          }
+
+          state.knockoutGames[gameDef.id] = {team1:t1, team2:t2, score1:s1, score2:s2, winner};
+          koApplied++;
+        });
+      }
     });
   }
 
-  // If API had no data, fall back to hardcoded results
-  if (matchesApplied === 0) {
-    state.groupStandings = {};
-    state.matchScores = {};
-    initStandings();
-    applyKnownResults();
-  }
-
-  // Always reseed knockout from hardcoded KNOCKOUT_ROUNDS so bracket updates
-  state.knockoutGames = {};
-  initKnockout();
-
-  // Always call render so all tabs update — groups, knockout bracket, schedule, points
+  // ── Step 3: Re-render everything ──
   render();
 
   const now = new Date().toLocaleTimeString('en-AU', {
     hour:'2-digit', minute:'2-digit', timeZone:'Australia/Sydney'
   });
-
   status.className = 'refresh-status ok';
-  if (matchesApplied > 0) {
-    status.textContent = '✓ ' + now + ' AEST — ' + matchesApplied + ' results loaded from live feed';
+  const total = groupApplied + koApplied;
+  if (total > 0) {
+    status.textContent = `✓ ${now} AEST — ${groupApplied} group + ${koApplied} knockout results from live feed`;
   } else {
-    status.textContent = '✓ ' + now + ' AEST — live feed pending, showing latest known results';
+    status.textContent = `✓ ${now} AEST — showing latest hardcoded results (live feed pending)`;
   }
 
   btn.disabled = false;
