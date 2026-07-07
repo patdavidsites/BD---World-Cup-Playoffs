@@ -396,16 +396,12 @@ button.apply-btn:hover { opacity: 0.88; }
 </header>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Mon 7 Jul (AEST)</div>
+  <div class="today-label">⚡ Today — Wed 9 Jul (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
 <div class="alive-strip" id="aliveStrip"></div>
 
-<div class="legend">
-  <span class="legend-title">Players:&nbsp;</span>
-  <div id="legendBar" style="display:flex;flex-wrap:wrap;gap:0.45rem;"></div>
-</div>
 
 <div class="refresh-bar">
   <button class="refresh-btn" id="refreshBtn" onclick="autoRefresh()">⚽ Refresh Scores</button>
@@ -414,15 +410,15 @@ button.apply-btn:hover { opacity: 0.88; }
 </div>
 <div class="tab-bar">
   <button class="tab-btn" onclick="showTab('myteams',this)">My Teams</button>
-  <button class="tab-btn active" onclick="showTab('groups',this)">Group Stage</button>
-  <button class="tab-btn" onclick="showTab('knockout',this)">Knockout</button>
+  <button class="tab-btn" onclick="showTab('groups',this)">Group Stage</button>
+  <button class="tab-btn active" onclick="showTab('knockout',this)">Knockout</button>
   <button class="tab-btn" onclick="showTab('schedule',this)">Schedule</button>
 </div>
 
-<div class="tab-panel active" id="tab-groups">
+<div class="tab-panel" id="tab-groups">
   <div class="groups-grid" id="groupsGrid"></div>
 </div>
-<div class="tab-panel" id="tab-knockout">
+<div class="tab-panel active" id="tab-knockout">
   <div class="knockout-wrapper">
     <div class="knockout-scroll" id="knockoutScroll"></div>
   </div>
@@ -491,18 +487,17 @@ const FLAG_CODES = {
 function flag(team) {
   const code = FLAG_CODES[team];
   if (!code) return '🏳';
-  return '<img src="https://flagcdn.com/20x15/'+code+'.png" srcset="https://flagcdn.com/40x30/'+code+'.png 2x" width="20" height="15" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
+  return '<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/'+code+'.svg" width="20" height="15" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
 }
 function flagLg(team) {
   const code = FLAG_CODES[team];
   if (!code) return '🏳';
-  return '<img src="https://flagcdn.com/24x18/'+code+'.png" srcset="https://flagcdn.com/48x36/'+code+'.png 2x" width="24" height="18" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
+  return '<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/'+code+'.svg" width="24" height="18" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
 }
 
 const TODAY_MATCHES = [
-  {teams:['Mexico',  'England'],   time:'10:00am AEST', venue:'Mexico City'},
-  {teams:['Spain',   'Portugal'],  time:'5:00am AEST',  venue:'Dallas'},
-  {teams:['Belgium', 'USA'],       time:'10:00am AEST', venue:'Seattle'},
+  {teams:['Egypt',       'Argentina'], time:'2:00am AEST',  venue:'Atlanta'},
+  {teams:['Switzerland', 'Colombia'],  time:'6:00am AEST',  venue:'Vancouver'},
 ];
 
 // Known results already played
@@ -547,38 +542,38 @@ const KNOWN_RESULTS = [
 
 const KNOCKOUT_ROUNDS = [
   {label:'Round of 32', key:'R32', games:[
-    {id:'R32-1', date:'Sun 29 Jun',time:'7:00am',  t1:'South Africa',t2:'Canada',      s1:0,s2:1,    winner:'Canada'},
-    {id:'R32-2', date:'Mon 30 Jun',time:'3:00am',  t1:'Brazil',      t2:'Japan',       s1:2,s2:1,    winner:'Brazil'},
-    {id:'R32-3', date:'Mon 30 Jun',time:'7:00am',  t1:'Germany',     t2:'Paraguay',    s1:1,s2:1,    winner:'Paraguay'},
-    {id:'R32-4', date:'Mon 30 Jun',time:'11:00am', t1:'Netherlands', t2:'Morocco',     s1:1,s2:1,    winner:'Morocco'},
-    {id:'R32-5', date:'Tue 1 Jul', time:'3:00am',  t1:'Ivory Coast', t2:'Norway',      s1:1,s2:2,    winner:'Norway'},
-    {id:'R32-6', date:'Tue 1 Jul', time:'7:00am',  t1:'France',      t2:'Sweden',      s1:3,s2:0,    winner:'France'},
-    {id:'R32-7', date:'Tue 1 Jul', time:'1:00pm',  t1:'Mexico',      t2:'Ecuador',     s1:2,s2:0,    winner:'Mexico'},
-    {id:'R32-8', date:'Wed 2 Jul', time:'2:00am',  t1:'England',     t2:'DR Congo',    s1:2,s2:1,    winner:'England'},
-    {id:'R32-9', date:'Wed 2 Jul', time:'6:00am',  t1:'Belgium',     t2:'Senegal',     s1:3,s2:2,    winner:'Belgium'},
-    {id:'R32-10',date:'Thu 3 Jul', time:'2:00am',  t1:'USA',         t2:'Bosnia-Herz', s1:2,s2:0,    winner:'USA'},
-    {id:'R32-11',date:'Thu 3 Jul', time:'5:00am',  t1:'Spain',       t2:'Austria',     s1:3,s2:0,    winner:'Spain'},
-    {id:'R32-12',date:'Fri 4 Jul', time:'9:00am',  t1:'Portugal',    t2:'Croatia',     s1:2,s2:1,    winner:'Portugal'},
-    {id:'R32-13',date:'Fri 4 Jul', time:'1:00pm',  t1:'Switzerland', t2:'Algeria',     s1:2,s2:0,    winner:'Switzerland'},
-    {id:'R32-14',date:'Sat 5 Jul', time:'4:00am',  t1:'Australia',   t2:'Egypt',       s1:1,s2:1,    winner:'Egypt'},
-    {id:'R32-15',date:'Sat 5 Jul', time:'8:00am',  t1:'Argentina',   t2:'Cape Verde',  s1:3,s2:2,    winner:'Argentina'},
-    {id:'R32-16',date:'Sat 5 Jul', time:'11:30am', t1:'Colombia',    t2:'Ghana',       s1:1,s2:0,    winner:'Colombia'},
+    {id:'R32-1', date:'Sun 29 Jun',time:'7:00am',  t1:'South Africa',t2:'Canada',      s1:0,s2:1, winner:'Canada'},
+    {id:'R32-2', date:'Mon 30 Jun',time:'3:00am',  t1:'Brazil',      t2:'Japan',       s1:2,s2:1, winner:'Brazil'},
+    {id:'R32-3', date:'Mon 30 Jun',time:'7:00am',  t1:'Germany',     t2:'Paraguay',    s1:1,s2:1, winner:'Paraguay'},
+    {id:'R32-4', date:'Mon 30 Jun',time:'11:00am', t1:'Netherlands', t2:'Morocco',     s1:1,s2:1, winner:'Morocco'},
+    {id:'R32-5', date:'Tue 1 Jul', time:'3:00am',  t1:'Ivory Coast', t2:'Norway',      s1:1,s2:2, winner:'Norway'},
+    {id:'R32-6', date:'Tue 1 Jul', time:'7:00am',  t1:'France',      t2:'Sweden',      s1:3,s2:0, winner:'France'},
+    {id:'R32-7', date:'Tue 1 Jul', time:'1:00pm',  t1:'Mexico',      t2:'Ecuador',     s1:2,s2:0, winner:'Mexico'},
+    {id:'R32-8', date:'Wed 2 Jul', time:'2:00am',  t1:'England',     t2:'DR Congo',    s1:2,s2:1, winner:'England'},
+    {id:'R32-9', date:'Wed 2 Jul', time:'6:00am',  t1:'Belgium',     t2:'Senegal',     s1:3,s2:2, winner:'Belgium'},
+    {id:'R32-10',date:'Thu 3 Jul', time:'2:00am',  t1:'USA',         t2:'Bosnia-Herz', s1:2,s2:0, winner:'USA'},
+    {id:'R32-11',date:'Thu 3 Jul', time:'5:00am',  t1:'Spain',       t2:'Austria',     s1:3,s2:0, winner:'Spain'},
+    {id:'R32-12',date:'Fri 4 Jul', time:'9:00am',  t1:'Portugal',    t2:'Croatia',     s1:2,s2:1, winner:'Portugal'},
+    {id:'R32-13',date:'Fri 4 Jul', time:'1:00pm',  t1:'Switzerland', t2:'Algeria',     s1:2,s2:0, winner:'Switzerland'},
+    {id:'R32-14',date:'Sat 5 Jul', time:'4:00am',  t1:'Australia',   t2:'Egypt',       s1:1,s2:1, winner:'Egypt'},
+    {id:'R32-15',date:'Sat 5 Jul', time:'8:00am',  t1:'Argentina',   t2:'Cape Verde',  s1:3,s2:2, winner:'Argentina'},
+    {id:'R32-16',date:'Sat 5 Jul', time:'11:30am', t1:'Colombia',    t2:'Ghana',       s1:1,s2:0, winner:'Colombia'},
   ]},
   {label:'Round of 16', key:'R16', games:[
-    {id:'R16-1',date:'Sun 6 Jul', time:'3:00am',  t1:'Morocco',  t2:'Canada',    s1:3,s2:0,    winner:'Morocco'},
-    {id:'R16-2',date:'Sun 6 Jul', time:'7:00am',  t1:'France',   t2:'Paraguay',  s1:1,s2:0,    winner:'France'},
-    {id:'R16-3',date:'Mon 7 Jul', time:'6:00am',  t1:'Brazil',   t2:'Norway',    s1:1,s2:2,    winner:'Norway'},
-    {id:'R16-4',date:'Mon 7 Jul', time:'10:00am', t1:'Mexico',   t2:'England',   s1:null,s2:null,winner:null},
-    {id:'R16-5',date:'Tue 8 Jul', time:'5:00am',  t1:'Spain',    t2:'Portugal',  s1:null,s2:null,winner:null},
-    {id:'R16-6',date:'Tue 8 Jul', time:'10:00am', t1:'Belgium',  t2:'USA',       s1:null,s2:null,winner:null},
-    {id:'R16-7',date:'Wed 9 Jul', time:'2:00am',  t1:'Egypt',    t2:'Argentina', s1:null,s2:null,winner:null},
-    {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:'Switzerland',t2:'Colombia',s1:null,s2:null,winner:null},
+    {id:'R16-1',date:'Sun 6 Jul', time:'3:00am',  t1:'Morocco',     t2:'Canada',      s1:3,s2:0,    winner:'Morocco'},
+    {id:'R16-2',date:'Sun 6 Jul', time:'7:00am',  t1:'France',      t2:'Paraguay',    s1:1,s2:0,    winner:'France'},
+    {id:'R16-3',date:'Mon 7 Jul', time:'6:00am',  t1:'Brazil',      t2:'Norway',      s1:1,s2:2,    winner:'Norway'},
+    {id:'R16-4',date:'Mon 7 Jul', time:'10:00am', t1:'Mexico',      t2:'England',     s1:2,s2:3,    winner:'England'},
+    {id:'R16-5',date:'Tue 8 Jul', time:'5:00am',  t1:'Spain',       t2:'Portugal',    s1:1,s2:0,    winner:'Spain'},
+    {id:'R16-6',date:'Tue 8 Jul', time:'10:00am', t1:'Belgium',     t2:'USA',         s1:4,s2:1,    winner:'Belgium'},
+    {id:'R16-7',date:'Wed 9 Jul', time:'2:00am',  t1:'Egypt',       t2:'Argentina',   s1:null,s2:null,winner:null},
+    {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:'Switzerland', t2:'Colombia',    s1:null,s2:null,winner:null},
   ]},
   {label:'Quarter-Finals', key:'QF', games:[
-    {id:'QF-1',date:'Fri 11 Jul',time:'6:00am', t1:'Morocco',t2:'France',       s1:null,s2:null,winner:null},
-    {id:'QF-2',date:'Fri 11 Jul',time:'10:00am',t1:'Norway', t2:null,           s1:null,s2:null,winner:null},
-    {id:'QF-3',date:'Sat 12 Jul',time:'5:00am', t1:null,     t2:null,           s1:null,s2:null,winner:null},
-    {id:'QF-4',date:'Sat 12 Jul',time:'11:00am',t1:null,     t2:null,           s1:null,s2:null,winner:null},
+    {id:'QF-1',date:'Thu 10 Jul',time:'6:00am', t1:'Morocco',  t2:'France',   s1:null,s2:null,winner:null},
+    {id:'QF-2',date:'Fri 11 Jul',time:'5:00am', t1:'Spain',    t2:'Belgium',  s1:null,s2:null,winner:null},
+    {id:'QF-3',date:'Sat 12 Jul',time:'7:00am', t1:'Norway',   t2:'England',  s1:null,s2:null,winner:null},
+    {id:'QF-4',date:'Sat 12 Jul',time:'11:00am',t1:null,       t2:null,       s1:null,s2:null,winner:null},
   ]},
   {label:'Semi-Finals', key:'SF', games:[
     {id:'SF-1',date:'Wed 16 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
@@ -805,18 +800,6 @@ function renderToday() {
 // RENDER: LEGEND
 // ══════════════════════════════════════════
 
-function renderLegend() {
-  document.getElementById('legendBar').innerHTML = state.staff.map(s => {
-    const count = Object.values(state.teamOwners).filter(o => o === s.name).length;
-    const rgb = hexToRgb(s.color);
-    return `<div class="legend-item" style="background:rgba(${rgb},0.10);border-color:rgba(${rgb},0.30);">
-      ${avatarHTML(s,22)}
-      <span class="legend-name">${s.name}</span>
-      <span class="legend-count" style="color:${s.color}">&nbsp;${count} teams</span>
-    </div>`;
-  }).join('');
-}
-
 // ══════════════════════════════════════════
 // RENDER: GROUPS
 // ══════════════════════════════════════════
@@ -925,15 +908,9 @@ function kTeamRowNew(team, score, isW, isL) {
   const sc = score !== null ? `<span class="k-score-sm">${score}</span>` : '';
   const rowBg = sf && !isL ? `background:rgba(${rgb},${isDark?0.13:0.07})` : '';
 
-  // Full name tag — always show full player name
-  const nameTag = sf
-    ? `<span style="font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:4px;background:${sf.color};color:#fff;white-space:nowrap;flex-shrink:0;letter-spacing:0.01em">${sf.name}</span>`
-    : '';
-
   return `<div class="k-team-row ${cls}" style="${rowBg}">
-    <img src="https://flagcdn.com/16x12/${FLAG_CODES[team]||'un'}.png" width="16" height="12" style="border-radius:2px;flex-shrink:0" alt="${team}">
+    <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/${FLAG_CODES[team]||'un'}.png" width="16" height="12" style="border-radius:2px;flex-shrink:0" alt="${team}">
     <span class="k-name-sm">${team}${tick}</span>
-    ${nameTag}
     ${sc}
   </div>`;
 }
@@ -1585,7 +1562,7 @@ function renderAliveStrip() {
     return teams.map(team => {
       const code = FLAG_CODES[team] || 'un';
       return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
-        <img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${team}">
+        <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/${code}.png" width="16" height="12" alt="${team}">
         <span class="alive-team-name">${team}</span>
         <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
       </div>`;
@@ -1597,7 +1574,6 @@ function renderAliveStrip() {
 }
 
 function render() {
-  renderLegend();
   renderToday();
   renderAliveStrip();
   renderGroups();
