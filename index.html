@@ -484,15 +484,28 @@ const FLAG_CODES = {
   'Portugal':'pt','Colombia':'co','DR Congo':'cd','Uzbekistan':'uz',
   'England':'gb-eng','Croatia':'hr','Ghana':'gh','Panama':'pa',
 };
+
+// Convert ISO code to Unicode flag emoji — works on all platforms, no CDN needed
+function codeToEmoji(code) {
+  if (!code) return '🏳';
+  // Handle regional subdivision codes like gb-sct, gb-eng
+  if (code === 'gb-sct') return '🏴󠁧󠁢󠁳󠁣󠁴󠁿';
+  if (code === 'gb-eng') return '🏴󠁧󠁢󠁥󠁮󠁧󠁿';
+  if (code === 'gb-wls') return '🏴󠁧󠁢󠁷󠁬󠁳󠁿';
+  // Standard two-letter ISO code → emoji
+  const letters = code.toUpperCase().split('');
+  return letters.map(l => String.fromCodePoint(l.charCodeAt(0) + 127397)).join('');
+}
+
 function flag(team) {
   const code = FLAG_CODES[team];
-  if (!code) return '🏳';
-  return '<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/'+code+'.svg" width="20" height="15" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
+  const emoji = codeToEmoji(code);
+  return `<span style="font-size:1rem;line-height:1;vertical-align:middle;flex-shrink:0" aria-label="${team}">${emoji}</span>`;
 }
 function flagLg(team) {
   const code = FLAG_CODES[team];
-  if (!code) return '🏳';
-  return '<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/'+code+'.svg" width="24" height="18" alt="'+team+'" style="border-radius:2px;vertical-align:middle;flex-shrink:0;object-fit:cover;display:inline-block">';
+  const emoji = codeToEmoji(code);
+  return `<span style="font-size:1.1rem;line-height:1;vertical-align:middle;flex-shrink:0" aria-label="${team}">${emoji}</span>`;
 }
 
 const TODAY_MATCHES = [
@@ -909,7 +922,7 @@ function kTeamRowNew(team, score, isW, isL) {
   const rowBg = sf && !isL ? `background:rgba(${rgb},${isDark?0.13:0.07})` : '';
 
   return `<div class="k-team-row ${cls}" style="${rowBg}">
-    <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/${FLAG_CODES[team]||'un'}.png" width="16" height="12" style="border-radius:2px;flex-shrink:0" alt="${team}">
+    <span style="font-size:1rem;line-height:1;vertical-align:middle;flex-shrink:0">${codeToEmoji(FLAG_CODES[team]||'')}</span>
     <span class="k-name-sm">${team}${tick}</span>
     ${sc}
   </div>`;
@@ -1520,8 +1533,6 @@ function renderAliveStrip() {
   const el = document.getElementById('aliveStrip');
   if (!el) return;
 
-  // Collect all teams still in the knockout stage
-  // A team is "alive" if it appears in KNOCKOUT_ROUNDS but hasn't lost yet
   const eliminated = new Set();
   const inKnockout = new Set();
 
@@ -1530,7 +1541,6 @@ function renderAliveStrip() {
       const gData = getKOGameData(g.id);
       if (gData.team1) inKnockout.add(gData.team1);
       if (gData.team2) inKnockout.add(gData.team2);
-      // The loser is eliminated
       if (gData.winner) {
         const loser = gData.winner === gData.team1 ? gData.team2 : gData.team1;
         if (loser) eliminated.add(loser);
@@ -1538,39 +1548,55 @@ function renderAliveStrip() {
     });
   });
 
-  const aliveTeams = [...inKnockout].filter(t => !eliminated.has(t));
+  const aliveTeams   = [...inKnockout].filter(t => !eliminated.has(t));
+  const deadTeams    = [...eliminated];
+  const totalIn      = inKnockout.size;
 
-  if (aliveTeams.length === 0) {
-    el.style.display = 'none';
-    return;
-  }
+  if (totalIn === 0) { el.style.display = 'none'; return; }
 
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
-  // Group by player so we can sort by player
-  const byPlayer = {};
-  aliveTeams.forEach(team => {
+  // Build alive pills
+  const aliveHtml = aliveTeams.map(team => {
     const sf = staffFor(team);
-    const key = sf ? sf.name : '?';
-    if (!byPlayer[key]) byPlayer[key] = { sf, teams: [] };
-    byPlayer[key].teams.push(team);
-  });
-
-  const html = Object.values(byPlayer).map(({ sf, teams }) => {
     if (!sf) return '';
     const rgb = hexToRgb(sf.color);
-    return teams.map(team => {
-      const code = FLAG_CODES[team] || 'un';
-      return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
-        <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/${code}.png" width="16" height="12" alt="${team}">
-        <span class="alive-team-name">${team}</span>
-        <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
-      </div>`;
-    }).join('');
+    const code = FLAG_CODES[team] || '';
+    return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
+      <span style="font-size:1rem;line-height:1">${codeToEmoji(code)}</span>
+      <span class="alive-team-name">${team}</span>
+      <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
+    </div>`;
+  }).join('');
+
+  // Build eliminated pills — just skull + player name (deduplicated per player)
+  const deadPlayers = new Set();
+  deadTeams.forEach(team => {
+    const sf = staffFor(team);
+    if (sf) deadPlayers.add(sf.name);
+  });
+  // Only show a player as "dead" if ALL their teams are eliminated
+  const trulyDead = [...deadPlayers].filter(name => {
+    const myTeams = Object.entries(state.teamOwners).filter(([t,o])=>o===name).map(([t])=>t);
+    const myKOTeams = myTeams.filter(t => inKnockout.has(t));
+    return myKOTeams.length > 0 && myKOTeams.every(t => eliminated.has(t));
+  });
+  const deadHtml = trulyDead.map(name => {
+    const sf = getStaff(name);
+    if (!sf) return '';
+    return `<div class="alive-team" style="background:rgba(0,0,0,${isDark?0.2:0.05});border-color:rgba(0,0,0,${isDark?0.25:0.12});opacity:0.6">
+      <span style="font-size:0.9rem;line-height:1">💀</span>
+      <span class="alive-team-name" style="color:var(--muted)">${sf.name}</span>
+    </div>`;
   }).join('');
 
   el.style.display = 'flex';
-  el.innerHTML = `<span class="alive-label">🟢 Still alive (${aliveTeams.length})</span>${html}`;
+  el.style.flexWrap = 'wrap';
+  el.innerHTML = `
+    <span class="alive-label">🟢 Alive (${aliveTeams.length})</span>
+    ${aliveHtml}
+    ${trulyDead.length > 0 ? `<div style="width:100%;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;padding-top:0.4rem;border-top:1px solid var(--border);margin-top:0.2rem"><span class="alive-label">💀 Out (${trulyDead.length})</span>${deadHtml}</div>` : ''}
+  `;
 }
 
 function render() {
