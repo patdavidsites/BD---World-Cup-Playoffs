@@ -336,6 +336,14 @@ button.apply-btn:hover { opacity: 0.88; }
 .winner-banner-title { font-family:'Oswald',sans-serif; font-size:1.1rem; font-weight:700; color:var(--gold); }
 .winner-banner-sub { font-size:0.78rem; color:var(--text2); margin-top:2px; }
 
+
+/* Twemoji flag images */
+img.emoji {
+  height: 1.1em;
+  width: 1.1em;
+  vertical-align: -0.1em;
+  display: inline-block;
+}
 /* RESULTS STRIP */
 .alive-strip {
   background: var(--surface);
@@ -382,6 +390,7 @@ button.apply-btn:hover { opacity: 0.88; }
 .result-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.72rem; display: flex; align-items: center; gap: 0.4rem; }
 .result-score { font-weight: 700; color: var(--text); }
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -521,8 +530,8 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Morocco',  'France'],   time:'6:00am AEST', venue:'Boston'},
-  {teams:['Spain',    'Belgium'],  time:'5:00am AEST', venue:'Los Angeles'},
+  {teams:['Morocco',  'France'],   time:'6:00am AEST',  venue:'Boston'},
+  {teams:['Spain',    'Belgium'],  time:'5:00am AEST',  venue:'Los Angeles'},
 ];
 
 // Known results already played
@@ -1619,6 +1628,7 @@ function render() {
   renderKnockout();
   renderMyTeams();
   renderSchedule();
+  if (typeof twemoji !== 'undefined') twemoji.parse(document.body, {folder:'svg',ext:'.svg',base:'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/'});
 }
 
 // ══════════════════════════════════════════
