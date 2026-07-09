@@ -1091,7 +1091,8 @@ function showTab(name, btn) {
 // UPDATE PARSER
 // ══════════════════════════════════════════
 
-const ALL_TEAMS = Object.keys(FLAG_CODES);
+const FLAG_CODES = FLAG_ISO; // alias for backwards compatibility
+const ALL_TEAMS = Object.keys(FLAG_ISO);
 
 const SCHEDULE = [
   // ── GROUP A ──
@@ -1608,7 +1609,7 @@ function renderAliveStrip() {
     const sf = staffFor(team);
     if (!sf) return '';
     const rgb = hexToRgb(sf.color);
-    const code = FLAG_CODES[team] || '';
+    const code = (FLAG_ISO[team]||'').toLowerCase();
     return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
       ${flagImg(team, 20)}
       <span class="alive-team-name">${team}</span>
