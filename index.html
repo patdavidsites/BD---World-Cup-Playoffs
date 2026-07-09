@@ -337,13 +337,6 @@ button.apply-btn:hover { opacity: 0.88; }
 .winner-banner-sub { font-size:0.78rem; color:var(--text2); margin-top:2px; }
 
 
-/* Twemoji flag images */
-img.emoji {
-  height: 1.1em;
-  width: 1.1em;
-  vertical-align: -0.1em;
-  display: inline-block;
-}
 /* RESULTS STRIP */
 .alive-strip {
   background: var(--surface);
@@ -375,7 +368,7 @@ img.emoji {
   font-weight: 500;
   white-space: nowrap;
 }
-.alive-team img { border-radius: 2px; flex-shrink: 0; }
+.alive-team img { border-radius: 2px; flex-shrink: 0; vertical-align:middle; }
 .alive-team-name { color: var(--text); }
 .alive-owner-tag {
   font-size: 0.62rem;
@@ -390,7 +383,6 @@ img.emoji {
 .result-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.72rem; display: flex; align-items: center; gap: 0.4rem; }
 .result-score { font-weight: 700; color: var(--text); }
 </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -479,6 +471,58 @@ const GROUPS = {
   L:['England','Croatia','Ghana','Panama'],
 };
 
+const FLAG_ISO = {
+  'Mexico':'MX',
+  'South Korea':'KR',
+  'Czechia':'CZ',
+  'South Africa':'ZA',
+  'Canada':'CA',
+  'Bosnia-Herz':'BA',
+  'Qatar':'QA',
+  'Switzerland':'CH',
+  'Brazil':'BR',
+  'Morocco':'MA',
+  'Haiti':'HT',
+  'Scotland':'GB',
+  'USA':'US',
+  'Australia':'AU',
+  'Paraguay':'PY',
+  'Türkiye':'TR',
+  'Germany':'DE',
+  'Ecuador':'EC',
+  'Ivory Coast':'CI',
+  'Curaçao':'CW',
+  'Netherlands':'NL',
+  'Japan':'JP',
+  'Sweden':'SE',
+  'Tunisia':'TN',
+  'Belgium':'BE',
+  'Iran':'IR',
+  'Egypt':'EG',
+  'New Zealand':'NZ',
+  'Spain':'ES',
+  'Uruguay':'UY',
+  'Saudi Arabia':'SA',
+  'Cape Verde':'CV',
+  'France':'FR',
+  'Senegal':'SN',
+  'Norway':'NO',
+  'Iraq':'IQ',
+  'Argentina':'AR',
+  'Algeria':'DZ',
+  'Austria':'AT',
+  'Jordan':'JO',
+  'Portugal':'PT',
+  'Colombia':'CO',
+  'DR Congo':'CD',
+  'Uzbekistan':'UZ',
+  'England':'GB',
+  'Croatia':'HR',
+  'Ghana':'GH',
+  'Panama':'PA'
+};
+
+// Keep emoji as text fallback
 const FLAG_EMOJI = {
   'Mexico':'🇲🇽','South Korea':'🇰🇷','Czechia':'🇨🇿','South Africa':'🇿🇦',
   'Canada':'🇨🇦','Bosnia-Herz':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭',
@@ -493,40 +537,21 @@ const FLAG_EMOJI = {
   'Portugal':'🇵🇹','Colombia':'🇨🇴','DR Congo':'🇨🇩','Uzbekistan':'🇺🇿',
   'England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦',
 };
-const FLAG_CODES = {
-  'Mexico':'mx','South Korea':'kr','Czechia':'cz','South Africa':'za',
-  'Canada':'ca','Bosnia-Herz':'ba','Qatar':'qa','Switzerland':'ch',
-  'Brazil':'br','Morocco':'ma','Haiti':'ht','Scotland':'gb-sct',
-  'USA':'us','Australia':'au','Paraguay':'py','Türkiye':'tr',
-  'Germany':'de','Ecuador':'ec','Ivory Coast':'ci','Curaçao':'cw',
-  'Netherlands':'nl','Japan':'jp','Sweden':'se','Tunisia':'tn',
-  'Belgium':'be','Iran':'ir','Egypt':'eg','New Zealand':'nz',
-  'Spain':'es','Uruguay':'uy','Saudi Arabia':'sa','Cape Verde':'cv',
-  'France':'fr','Senegal':'sn','Norway':'no','Iraq':'iq',
-  'Argentina':'ar','Algeria':'dz','Austria':'at','Jordan':'jo',
-  'Portugal':'pt','Colombia':'co','DR Congo':'cd','Uzbekistan':'uz',
-  'England':'gb-eng','Croatia':'hr','Ghana':'gh','Panama':'pa',
-};
 
-// Convert ISO code to Unicode flag emoji — works on all platforms, no CDN needed
-function codeToEmoji(code) {
-  if (!code) return '🏳';
-  // Handle regional subdivision codes like gb-sct, gb-eng
-  if (code === 'gb-sct') return '🏴󠁧󠁢󠁳󠁣󠁴󠁿';
-  if (code === 'gb-eng') return '🏴󠁧󠁢󠁥󠁮󠁧󠁿';
-  if (code === 'gb-wls') return '🏴󠁧󠁢󠁷󠁬󠁳󠁿';
-  // Standard two-letter ISO code → emoji
-  const letters = code.toUpperCase().split('');
-  return letters.map(l => String.fromCodePoint(l.charCodeAt(0) + 127397)).join('');
+// Use flagsapi.com PNG images - works on ALL platforms including Windows
+function flagImg(team, size) {
+  const iso = FLAG_ISO[team];
+  if (!iso) return '<span style="font-size:16px">&#127987;</span>';
+  const sz = size || 16;
+  const h = Math.round(sz * 0.75);
+  return '<img src="https://flagsapi.com/' + iso + '/flat/' + sz + '.png" width="' + sz + '" height="' + h + '" style="vertical-align:middle;display:inline-block;border-radius:2px;flex-shrink:0" alt="' + team + '">';
 }
 
 function flag(team) {
-  const e = FLAG_EMOJI[team] || '🏳';
-  return `<span style="font-size:1.1rem;line-height:1;vertical-align:middle;display:inline-block">${e}</span>`;
+  return flagImg(team, 20);
 }
 function flagLg(team) {
-  const e = FLAG_EMOJI[team] || '🏳';
-  return `<span style="font-size:1.2rem;line-height:1;vertical-align:middle;display:inline-block">${e}</span>`;
+  return flagImg(team, 24);
 }
 
 const TODAY_MATCHES = [
@@ -943,7 +968,7 @@ function kTeamRowNew(team, score, isW, isL) {
   const rowBg = sf && !isL ? `background:rgba(${rgb},${isDark?0.13:0.07})` : '';
 
   return `<div class="k-team-row ${cls}" style="${rowBg}">
-    <span style="font-size:1rem;line-height:1;flex-shrink:0;display:inline-block">${FLAG_EMOJI[team]||'🏳'}</span>
+    ${flagImg(team, 20)}
     <span class="k-name-sm">${team}${tick}</span>
     ${sf ? `<span style="font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:10px;background:${sf.color};color:#fff;white-space:nowrap;flex-shrink:0;margin-left:2px">${sf.name}</span>` : ''}
     ${sc}
@@ -1585,7 +1610,7 @@ function renderAliveStrip() {
     const rgb = hexToRgb(sf.color);
     const code = FLAG_CODES[team] || '';
     return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
-      <span style="font-size:1rem;line-height:1">${FLAG_EMOJI[team]||'🏳'}</span>
+      ${flagImg(team, 20)}
       <span class="alive-team-name">${team}</span>
       <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
     </div>`;
@@ -1628,7 +1653,7 @@ function render() {
   renderKnockout();
   renderMyTeams();
   renderSchedule();
-  if (typeof twemoji !== 'undefined') twemoji.parse(document.body, {folder:'svg',ext:'.svg',base:'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/'});
+
 }
 
 // ══════════════════════════════════════════
