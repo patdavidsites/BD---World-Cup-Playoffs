@@ -396,7 +396,7 @@ button.apply-btn:hover { opacity: 0.88; }
 </header>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Wed 9 Jul (AEST)</div>
+  <div class="today-label">⚡ Today — Fri 10 Jul (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -470,6 +470,20 @@ const GROUPS = {
   L:['England','Croatia','Ghana','Panama'],
 };
 
+const FLAG_EMOJI = {
+  'Mexico':'🇲🇽','South Korea':'🇰🇷','Czechia':'🇨🇿','South Africa':'🇿🇦',
+  'Canada':'🇨🇦','Bosnia-Herz':'🇧🇦','Qatar':'🇶🇦','Switzerland':'🇨🇭',
+  'Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹','Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'USA':'🇺🇸','Australia':'🇦🇺','Paraguay':'🇵🇾','Türkiye':'🇹🇷',
+  'Germany':'🇩🇪','Ecuador':'🇪🇨','Ivory Coast':'🇨🇮','Curaçao':'🇨🇼',
+  'Netherlands':'🇳🇱','Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳',
+  'Belgium':'🇧🇪','Iran':'🇮🇷','Egypt':'🇪🇬','New Zealand':'🇳🇿',
+  'Spain':'🇪🇸','Uruguay':'🇺🇾','Saudi Arabia':'🇸🇦','Cape Verde':'🇨🇻',
+  'France':'🇫🇷','Senegal':'🇸🇳','Norway':'🇳🇴','Iraq':'🇮🇶',
+  'Argentina':'🇦🇷','Algeria':'🇩🇿','Austria':'🇦🇹','Jordan':'🇯🇴',
+  'Portugal':'🇵🇹','Colombia':'🇨🇴','DR Congo':'🇨🇩','Uzbekistan':'🇺🇿',
+  'England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦',
+};
 const FLAG_CODES = {
   'Mexico':'mx','South Korea':'kr','Czechia':'cz','South Africa':'za',
   'Canada':'ca','Bosnia-Herz':'ba','Qatar':'qa','Switzerland':'ch',
@@ -498,19 +512,17 @@ function codeToEmoji(code) {
 }
 
 function flag(team) {
-  const code = FLAG_CODES[team];
-  const emoji = codeToEmoji(code);
-  return `<span style="font-size:1rem;line-height:1;vertical-align:middle;flex-shrink:0" aria-label="${team}">${emoji}</span>`;
+  const e = FLAG_EMOJI[team] || '🏳';
+  return `<span style="font-size:1.1rem;line-height:1;vertical-align:middle;display:inline-block">${e}</span>`;
 }
 function flagLg(team) {
-  const code = FLAG_CODES[team];
-  const emoji = codeToEmoji(code);
-  return `<span style="font-size:1.1rem;line-height:1;vertical-align:middle;flex-shrink:0" aria-label="${team}">${emoji}</span>`;
+  const e = FLAG_EMOJI[team] || '🏳';
+  return `<span style="font-size:1.2rem;line-height:1;vertical-align:middle;display:inline-block">${e}</span>`;
 }
 
 const TODAY_MATCHES = [
-  {teams:['Egypt',       'Argentina'], time:'2:00am AEST',  venue:'Atlanta'},
-  {teams:['Switzerland', 'Colombia'],  time:'6:00am AEST',  venue:'Vancouver'},
+  {teams:['Morocco',  'France'],   time:'6:00am AEST', venue:'Boston'},
+  {teams:['Spain',    'Belgium'],  time:'5:00am AEST', venue:'Los Angeles'},
 ];
 
 // Known results already played
@@ -573,27 +585,27 @@ const KNOCKOUT_ROUNDS = [
     {id:'R32-16',date:'Sat 5 Jul', time:'11:30am', t1:'Colombia',    t2:'Ghana',       s1:1,s2:0, winner:'Colombia'},
   ]},
   {label:'Round of 16', key:'R16', games:[
-    {id:'R16-1',date:'Sun 6 Jul', time:'3:00am',  t1:'Morocco',     t2:'Canada',      s1:3,s2:0,    winner:'Morocco'},
-    {id:'R16-2',date:'Sun 6 Jul', time:'7:00am',  t1:'France',      t2:'Paraguay',    s1:1,s2:0,    winner:'France'},
-    {id:'R16-3',date:'Mon 7 Jul', time:'6:00am',  t1:'Brazil',      t2:'Norway',      s1:1,s2:2,    winner:'Norway'},
-    {id:'R16-4',date:'Mon 7 Jul', time:'10:00am', t1:'Mexico',      t2:'England',     s1:2,s2:3,    winner:'England'},
-    {id:'R16-5',date:'Tue 8 Jul', time:'5:00am',  t1:'Spain',       t2:'Portugal',    s1:1,s2:0,    winner:'Spain'},
-    {id:'R16-6',date:'Tue 8 Jul', time:'10:00am', t1:'Belgium',     t2:'USA',         s1:4,s2:1,    winner:'Belgium'},
-    {id:'R16-7',date:'Wed 9 Jul', time:'2:00am',  t1:'Egypt',       t2:'Argentina',   s1:null,s2:null,winner:null},
-    {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:'Switzerland', t2:'Colombia',    s1:null,s2:null,winner:null},
+    {id:'R16-1',date:'Sun 6 Jul', time:'3:00am',  t1:'Morocco',     t2:'Canada',      s1:3,s2:0, winner:'Morocco'},
+    {id:'R16-2',date:'Sun 6 Jul', time:'7:00am',  t1:'France',      t2:'Paraguay',    s1:1,s2:0, winner:'France'},
+    {id:'R16-3',date:'Mon 7 Jul', time:'6:00am',  t1:'Brazil',      t2:'Norway',      s1:1,s2:2, winner:'Norway'},
+    {id:'R16-4',date:'Mon 7 Jul', time:'10:00am', t1:'Mexico',      t2:'England',     s1:2,s2:3, winner:'England'},
+    {id:'R16-5',date:'Tue 8 Jul', time:'5:00am',  t1:'Spain',       t2:'Portugal',    s1:1,s2:0, winner:'Spain'},
+    {id:'R16-6',date:'Tue 8 Jul', time:'10:00am', t1:'Belgium',     t2:'USA',         s1:4,s2:1, winner:'Belgium'},
+    {id:'R16-7',date:'Wed 9 Jul', time:'2:00am',  t1:'Egypt',       t2:'Argentina',   s1:2,s2:3, winner:'Argentina'},
+    {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:'Switzerland', t2:'Colombia',    s1:0,s2:0, winner:'Switzerland'},
   ]},
   {label:'Quarter-Finals', key:'QF', games:[
-    {id:'QF-1',date:'Thu 10 Jul',time:'6:00am', t1:'Morocco',  t2:'France',   s1:null,s2:null,winner:null},
-    {id:'QF-2',date:'Fri 11 Jul',time:'5:00am', t1:'Spain',    t2:'Belgium',  s1:null,s2:null,winner:null},
-    {id:'QF-3',date:'Sat 12 Jul',time:'7:00am', t1:'Norway',   t2:'England',  s1:null,s2:null,winner:null},
-    {id:'QF-4',date:'Sat 12 Jul',time:'11:00am',t1:null,       t2:null,       s1:null,s2:null,winner:null},
+    {id:'QF-1',date:'Fri 10 Jul',time:'6:00am',  t1:'Morocco',   t2:'France',      s1:null,s2:null,winner:null},
+    {id:'QF-2',date:'Sat 11 Jul',time:'5:00am',  t1:'Spain',     t2:'Belgium',     s1:null,s2:null,winner:null},
+    {id:'QF-3',date:'Sun 12 Jul',time:'7:00am',  t1:'Norway',    t2:'England',     s1:null,s2:null,winner:null},
+    {id:'QF-4',date:'Sun 12 Jul',time:'11:00am', t1:'Argentina', t2:'Switzerland', s1:null,s2:null,winner:null},
   ]},
   {label:'Semi-Finals', key:'SF', games:[
-    {id:'SF-1',date:'Wed 16 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'SF-2',date:'Thu 17 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'SF-1',date:'Wed 15 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'SF-2',date:'Thu 16 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
   ]},
   {label:'Final', key:'FINAL', games:[
-    {id:'FINAL',date:'Mon 21 Jul',time:'5:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'FINAL',date:'Mon 20 Jul',time:'5:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
   ]},
 ];
 
@@ -922,8 +934,9 @@ function kTeamRowNew(team, score, isW, isL) {
   const rowBg = sf && !isL ? `background:rgba(${rgb},${isDark?0.13:0.07})` : '';
 
   return `<div class="k-team-row ${cls}" style="${rowBg}">
-    <span style="font-size:1rem;line-height:1;vertical-align:middle;flex-shrink:0">${codeToEmoji(FLAG_CODES[team]||'')}</span>
+    <span style="font-size:1rem;line-height:1;flex-shrink:0;display:inline-block">${FLAG_EMOJI[team]||'🏳'}</span>
     <span class="k-name-sm">${team}${tick}</span>
+    ${sf ? `<span style="font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:10px;background:${sf.color};color:#fff;white-space:nowrap;flex-shrink:0;margin-left:2px">${sf.name}</span>` : ''}
     ${sc}
   </div>`;
 }
@@ -1563,7 +1576,7 @@ function renderAliveStrip() {
     const rgb = hexToRgb(sf.color);
     const code = FLAG_CODES[team] || '';
     return `<div class="alive-team" style="background:rgba(${rgb},${isDark?0.15:0.08});border-color:rgba(${rgb},${isDark?0.4:0.3})">
-      <span style="font-size:1rem;line-height:1">${codeToEmoji(code)}</span>
+      <span style="font-size:1rem;line-height:1">${FLAG_EMOJI[team]||'🏳'}</span>
       <span class="alive-team-name">${team}</span>
       <span class="alive-owner-tag" style="background:${sf.color}">${sf.name}</span>
     </div>`;
