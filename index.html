@@ -397,7 +397,7 @@ button.apply-btn:hover { opacity: 0.88; }
 </header>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Today — Fri 10 Jul (AEST)</div>
+  <div class="today-label">⚡ Semi-Finals This Week</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -555,8 +555,8 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['Morocco',  'France'],   time:'6:00am AEST',  venue:'Boston'},
-  {teams:['Spain',    'Belgium'],  time:'5:00am AEST',  venue:'Los Angeles'},
+  {teams:['France',  'Spain'],     time:'5:00am AEST Wed 15 Jul', venue:'Dallas'},
+  {teams:['England', 'Argentina'], time:'5:00am AEST Thu 16 Jul', venue:'Atlanta'},
 ];
 
 // Known results already played
@@ -629,14 +629,14 @@ const KNOCKOUT_ROUNDS = [
     {id:'R16-8',date:'Wed 9 Jul', time:'6:00am',  t1:'Switzerland', t2:'Colombia',    s1:0,s2:0, winner:'Switzerland'},
   ]},
   {label:'Quarter-Finals', key:'QF', games:[
-    {id:'QF-1',date:'Fri 10 Jul',time:'6:00am',  t1:'Morocco',   t2:'France',      s1:null,s2:null,winner:null},
-    {id:'QF-2',date:'Sat 11 Jul',time:'5:00am',  t1:'Spain',     t2:'Belgium',     s1:null,s2:null,winner:null},
-    {id:'QF-3',date:'Sun 12 Jul',time:'7:00am',  t1:'Norway',    t2:'England',     s1:null,s2:null,winner:null},
-    {id:'QF-4',date:'Sun 12 Jul',time:'11:00am', t1:'Argentina', t2:'Switzerland', s1:null,s2:null,winner:null},
+    {id:'QF-1',date:'Thu 10 Jul',time:'6:00am',  t1:'Morocco',   t2:'France',      s1:0,s2:2, winner:'France'},
+    {id:'QF-2',date:'Fri 11 Jul',time:'5:00am',  t1:'Spain',     t2:'Belgium',     s1:2,s2:1, winner:'Spain'},
+    {id:'QF-3',date:'Sat 12 Jul',time:'7:00am',  t1:'England',   t2:'Norway',      s1:2,s2:1, winner:'England'},
+    {id:'QF-4',date:'Sat 12 Jul',time:'11:00am', t1:'Argentina', t2:'Switzerland', s1:3,s2:1, winner:'Argentina'},
   ]},
   {label:'Semi-Finals', key:'SF', games:[
-    {id:'SF-1',date:'Wed 15 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
-    {id:'SF-2',date:'Thu 16 Jul',time:'5:00am', t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'SF-1',date:'Wed 15 Jul',time:'5:00am', t1:'France',  t2:'Spain',     s1:null,s2:null,winner:null},
+    {id:'SF-2',date:'Thu 16 Jul',time:'5:00am', t1:'England', t2:'Argentina', s1:null,s2:null,winner:null},
   ]},
   {label:'Final', key:'FINAL', games:[
     {id:'FINAL',date:'Mon 20 Jul',time:'5:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
