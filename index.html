@@ -397,7 +397,7 @@ button.apply-btn:hover { opacity: 0.88; }
 </header>
 
 <div class="today-strip">
-  <div class="today-label">⚡ Semi-Finals This Week</div>
+  <div class="today-label">⚡ Today — Thu 16 Jul (AEST)</div>
   <div class="today-games" id="todayGames"></div>
 </div>
 
@@ -471,56 +471,21 @@ const GROUPS = {
   L:['England','Croatia','Ghana','Panama'],
 };
 
-const FLAG_ISO = {
-  'Mexico':'MX',
-  'South Korea':'KR',
-  'Czechia':'CZ',
-  'South Africa':'ZA',
-  'Canada':'CA',
-  'Bosnia-Herz':'BA',
-  'Qatar':'QA',
-  'Switzerland':'CH',
-  'Brazil':'BR',
-  'Morocco':'MA',
-  'Haiti':'HT',
-  'Scotland':'GB',
-  'USA':'US',
-  'Australia':'AU',
-  'Paraguay':'PY',
-  'Türkiye':'TR',
-  'Germany':'DE',
-  'Ecuador':'EC',
-  'Ivory Coast':'CI',
-  'Curaçao':'CW',
-  'Netherlands':'NL',
-  'Japan':'JP',
-  'Sweden':'SE',
-  'Tunisia':'TN',
-  'Belgium':'BE',
-  'Iran':'IR',
-  'Egypt':'EG',
-  'New Zealand':'NZ',
-  'Spain':'ES',
-  'Uruguay':'UY',
-  'Saudi Arabia':'SA',
-  'Cape Verde':'CV',
-  'France':'FR',
-  'Senegal':'SN',
-  'Norway':'NO',
-  'Iraq':'IQ',
-  'Argentina':'AR',
-  'Algeria':'DZ',
-  'Austria':'AT',
-  'Jordan':'JO',
-  'Portugal':'PT',
-  'Colombia':'CO',
-  'DR Congo':'CD',
-  'Uzbekistan':'UZ',
-  'England':'GB',
-  'Croatia':'HR',
-  'Ghana':'GH',
-  'Panama':'PA'
+const FLAG_SVG = {
+  'Mexico':'mx','South Korea':'kr','Czechia':'cz','South Africa':'za',
+  'Canada':'ca','Bosnia-Herz':'ba','Qatar':'qa','Switzerland':'ch',
+  'Brazil':'br','Morocco':'ma','Haiti':'ht','Scotland':'gb-sct',
+  'USA':'us','Australia':'au','Paraguay':'py','Türkiye':'tr',
+  'Germany':'de','Ecuador':'ec','Ivory Coast':'ci','Curaçao':'cw',
+  'Netherlands':'nl','Japan':'jp','Sweden':'se','Tunisia':'tn',
+  'Belgium':'be','Iran':'ir','Egypt':'eg','New Zealand':'nz',
+  'Spain':'es','Uruguay':'uy','Saudi Arabia':'sa','Cape Verde':'cv',
+  'France':'fr','Senegal':'sn','Norway':'no','Iraq':'iq',
+  'Argentina':'ar','Algeria':'dz','Austria':'at','Jordan':'jo',
+  'Portugal':'pt','Colombia':'co','DR Congo':'cd','Uzbekistan':'uz',
+  'England':'gb-eng','Croatia':'hr','Ghana':'gh','Panama':'pa',
 };
+const FLAG_ISO = FLAG_SVG; // backwards compat
 
 // Keep emoji as text fallback
 const FLAG_EMOJI = {
@@ -538,13 +503,16 @@ const FLAG_EMOJI = {
   'England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭','Panama':'🇵🇦',
 };
 
-// Use flagsapi.com PNG images - works on ALL platforms including Windows
+// Flag images via raw.githubusercontent.com/lipis/flag-icons (200 OK, no CORS)
 function flagImg(team, size) {
-  const iso = FLAG_ISO[team];
-  if (!iso) return '<span style="font-size:16px">&#127987;</span>';
-  const sz = size || 16;
-  const h = Math.round(sz * 0.75);
-  return '<img src="https://flagsapi.com/' + iso + '/flat/' + sz + '.png" width="' + sz + '" height="' + h + '" style="vertical-align:middle;display:inline-block;border-radius:2px;flex-shrink:0" alt="' + team + '">';
+  const code = FLAG_SVG[team];
+  if (!code) return '<span style="font-size:1em">&#127987;</span>';
+  const sz = size || 20;
+  const BASE = 'https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/';
+  return '<img src="' + BASE + code + '.svg"'
+    + ' width="' + sz + '" height="' + Math.round(sz*0.75) + '"'
+    + ' style="vertical-align:middle;display:inline-block;border-radius:2px;flex-shrink:0;object-fit:cover"'
+    + ' alt="' + team + '">';
 }
 
 function flag(team) {
@@ -555,8 +523,7 @@ function flagLg(team) {
 }
 
 const TODAY_MATCHES = [
-  {teams:['France',  'Spain'],     time:'5:00am AEST Wed 15 Jul', venue:'Dallas'},
-  {teams:['England', 'Argentina'], time:'5:00am AEST Thu 16 Jul', venue:'Atlanta'},
+  {teams:['England', 'Argentina'], time:'5:00am AEST', venue:'Mercedes-Benz Stadium, Atlanta'},
 ];
 
 // Known results already played
@@ -635,11 +602,11 @@ const KNOCKOUT_ROUNDS = [
     {id:'QF-4',date:'Sat 12 Jul',time:'11:00am', t1:'Argentina', t2:'Switzerland', s1:3,s2:1, winner:'Argentina'},
   ]},
   {label:'Semi-Finals', key:'SF', games:[
-    {id:'SF-1',date:'Wed 15 Jul',time:'5:00am', t1:'France',  t2:'Spain',     s1:null,s2:null,winner:null},
+    {id:'SF-1',date:'Wed 15 Jul',time:'5:00am', t1:'France',  t2:'Spain',     s1:0,   s2:2,   winner:'Spain'},
     {id:'SF-2',date:'Thu 16 Jul',time:'5:00am', t1:'England', t2:'Argentina', s1:null,s2:null,winner:null},
   ]},
   {label:'Final', key:'FINAL', games:[
-    {id:'FINAL',date:'Mon 20 Jul',time:'5:00am',t1:null,t2:null,s1:null,s2:null,winner:null},
+    {id:'FINAL',date:'Mon 20 Jul',time:'5:00am',t1:'Spain',t2:null,s1:null,s2:null,winner:null},
   ]},
 ];
 
@@ -1091,7 +1058,7 @@ function showTab(name, btn) {
 // UPDATE PARSER
 // ══════════════════════════════════════════
 
-const FLAG_CODES = FLAG_ISO; // alias for backwards compatibility
+const FLAG_CODES = FLAG_SVG; // alias for backwards compatibility
 const ALL_TEAMS = Object.keys(FLAG_ISO);
 
 const SCHEDULE = [
